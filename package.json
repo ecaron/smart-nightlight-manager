@@ -1,4 +1,11 @@
 {
+  "name": "hue-website-nightlights",
+  "version": "0.0.1",
+  "license" : "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ecaron/hue-website-nightlights.git"
+  },
   "dependencies": {
     "async": "^1.5.0",
     "body-parser": "^1.14.2",
@@ -8,5 +15,13 @@
     "request": "^2.67.0",
     "serve-favicon": "^2.3.0",
     "stylus": "^0.53.0"
+  },
+  "devDependencies": {
+    "semistandard": "*",
+    "snazzy": "^2.0.1"
+  },
+  "scripts": {
+    "start": "node app",
+    "lint": "semistandard | snazzy"
   }
 }

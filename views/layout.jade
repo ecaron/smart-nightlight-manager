@@ -1,0 +1,20 @@
+doctype html
+html
+	head
+		block head
+			block title
+				title Program Name
+			block meta
+				meta(name='description', content='')
+				meta(name='keywords', content='')
+			link(rel='stylesheet', href='/css/bootstrap.min.css')
+			| <style>
+			| body { padding-top: 60px; }
+			| </style>
+			script(src='//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js')
+	body
+		include header
+
+		block content
+
+		include footer

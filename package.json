@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "async": "^1.5.0",
+    "body-parser": "^1.14.2",
+    "express": "^4.13.3",
+    "lodash": "^3.10.1",
+    "nunjucks": "^2.2.0",
+    "request": "^2.67.0",
+    "serve-favicon": "^2.3.0",
+    "stylus": "^0.53.0"
+  }
+}

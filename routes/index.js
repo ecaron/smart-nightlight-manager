@@ -1,5 +1,14 @@
 'use strict';
 
 exports.index = function (req, res) {
-  res.render('index', {'title': 'banana'});
+  var values = {
+    curPage: 'overview'
+  };
+  res.render('index', values);
+};
+exports.settings = function (req, res) {
+  var values = {
+    curPage: 'settings'
+  };
+  res.render('settings', values);
 };

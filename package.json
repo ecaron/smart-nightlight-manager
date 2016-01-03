@@ -21,8 +21,6 @@
     "node-dash-button": "^0.2.5",
     "node-hue-api": "^1.2.1",
     "nunjucks": "^2.2.0",
-    "request": "^2.67.0",
-    "view-helpers": "0.1.5",
     "winston": "^2.1.1"
   },
   "devDependencies": {
@@ -30,7 +28,7 @@
     "snazzy": "^2.0.1"
   },
   "scripts": {
-    "start": "node app",
+    "start": "node server",
     "lint": "semistandard | snazzy"
   }
 }

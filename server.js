@@ -6,9 +6,12 @@ var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var flash = require('connect-flash');
 var nunjucks = require('nunjucks');
+
 var bodyParser = require('body-parser');
 var logger = require('./lib/logger');
 
+// Required early on see we can just shut it all down if there's
+// no Hue to connect to
 require('./lib/bridge');
 
 process.on('uncaughtException', function(err) {
@@ -34,6 +37,9 @@ app.use(session({
 }));
 app.use(flash());
 
+app.use('/scripts/', express.static('node_modules/moment'));
+app.use(express.static('public'));
+
 app.use(function (req, res, next) {
   req.log = function(type, message, meta) {
     if (typeof meta !== 'object') {
@@ -52,7 +58,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 

@@ -2,11 +2,13 @@
   "restartable": "rs",
   "ignore": [
     ".git",
-    "node_modules/**/node_modules"
+    "node_modules/**/node_modules",
+    "config/*.json"
   ],
   "verbose": true,
   "env": {
-    "NODE_ENV": "development"
+    "NODE_ENV": "development",
+    "DISABLE_BUTTON": true
   },
-  "ext": "js json html"
+  "ext": "js html"
 }

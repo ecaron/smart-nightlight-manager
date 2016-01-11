@@ -124,7 +124,7 @@
   $('h2#date').html('Last Update: ' + moment().format('h:mma')); //Safest way to know we're showing the right timezone
   setTimeout(function(){
     //Quickest way to hopefully always show proper state of the lights
-    location.reload();
+    location.replace('/?skipLog=1');
   }, 60 * 1000);
   $('span.timer-countdown').each(function(i, span){
     $(span).html(moment($(span).data('time')).fromNow());

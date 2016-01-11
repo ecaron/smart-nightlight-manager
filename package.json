@@ -19,7 +19,7 @@
     "lowdb": "0.10.3",
     "moment": "^2.11.1",
     "morgan": "^1.6.1",
-    "node-dash-button": "^0.2.5",
+    "node-dash-button": "^0.2.6",
     "node-hue-api": "^1.2.1",
     "nunjucks": "^2.2.0",
     "sprintf-js": "^1.0.3",

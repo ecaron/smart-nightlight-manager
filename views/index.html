@@ -2,48 +2,106 @@
 
 {% block content %}
 
-  <h2 class="pull-right" id="date"></h2>
-  {% for lightId, light in lights %}
-    <div class="row">
-      <div class="col-md-12">
+  <h2 class="text-right" id="date"></h2>
+  <div class="row">
+    {% for lightId, light in lights %}
+      <div class="col-md-6">
+
         <h2>{{ light.name }}</h2>
-        <h3>State: {{ light.state }}</h3>
-        <h4>For lighting schedule, please use the Hue app on your phone</h4>
-        {% if light.result.on %}
-          <form method="post">
-            <input type="hidden" name="light" value="{{ light.id }}">
-            <input type="hidden" name="cmd" value="turn-off">
-            <button class="btn btn-warning" type="submit">Turn Off</button>
-          </form>
-        {% else %}
-          <form method="post">
-            <input type="hidden" name="light" value="{{ light.id }}">
-            <input type="hidden" name="cmd" value="turn-on-keep-on">
-            <button class="btn btn-warning" type="submit">Turn On &amp; Stay On</button>
-          </form>
-          <form method="post">
-            <input type="hidden" name="light" value="{{ light.id }}">
-            <input type="hidden" name="cmd" value="turn-on-with-timer">
-            <button class="btn btn-warning" type="submit">Turn On &amp; Use Timer</button>
-          </form>
+
+        {% if light.timerTime %}
+          <h3>Timer is active. Turning off <span class="timer-countdown" data-time="{{ light.timerTime }}"></span></h3>
         {% endif %}
-        <h4>Button Color:</h4>
-        <form method="post">
-          <input type="hidden" name="light" value="{{ light.id }}">
-          <input type="hidden" name="cmd" value="default-color">
-          <select name="color" class="color-box">
-            {% for color in colors %}
-              <option value="{{ color.hex }}" {% if color.hex == light.settings.hex %}selected="selected"{% endif %} style="background:{{ color.hex }};color:{{ color.hex }}">{{ color.title}}</option>
+
+        {% if light.result.state.on %}
+          <fieldset>
+            <legend>The light is <strong>ON</strong></legend>
+            <form method="post" class="form-horizontal">
+              <div class="form-group">
+                <div class="col-md-offset-1 col-md-8">
+                  <input type="hidden" name="light" value="{{ light.id }}">
+                  <input type="hidden" name="cmd" value="turn-off">
+                  <button class="btn btn-primary" type="submit">Turn Off</button>
+                </div>
+              </div>
+            </form>
+          </fieldset>
+        {% else %}
+          <fieldset>
+            <legend>The light is <strong>OFF</strong></legend>
+            <div class="col-md-offset-1 col-md-4">
+              <form method="post" class="form-horizontal">
+                <div class="form-group">
+                  <input type="hidden" name="light" value="{{ light.id }}">
+                  <input type="hidden" name="cmd" value="turn-on-keep-on">
+                  <button class="btn btn-default" type="submit">Turn On &amp; Stay On</button>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-offset-1 col-md-4">
+              <form method="post" class="form-horizontal">
+                <div class="form-group">
+                  <input type="hidden" name="light" value="{{ light.id }}">
+                  <input type="hidden" name="cmd" value="turn-on-with-timer">
+                  <button class="btn btn-default" type="submit">Turn On &amp; Use Timer</button>
+                </div>
+              </form>
+            </div>
+          </fieldset>
+        {% endif %}
+
+        <h4>Logs</h4>
+        {% if light.logs|length %}
+          <ul>
+            {% for log in light.logs|sort(true) %}
+              <li><code style="width:100%">{{ log }}</code></li>
             {% endfor %}
-          </select>
-          <button class="btn btn-warning" type="submit">Save</button>
-        </form>
+          </ul>
+        {% else %}
+          <em>No log activity.</em>
+        {% endif %}
+
+        <h4>Settings</h4>
+        <div class="row">
+          <form method="post" class="col-md-4">
+            <div class="form-group">
+              <label class="control-label">Timer Minutes</label>
+              <div class="input-group">
+                <input type="hidden" name="light" value="{{ light.id }}">
+                <input type="hidden" name="cmd" value="timer-length">
+                <input class="form-control" type="number" name="minutes" placeholder="60" value="{{ light.settings.stayOnMinutes }}">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="submit">Save</button>
+                </span>
+              </div>
+            </div>
+          </form>
+          <form method="post" class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Light Color</label>
+              <div class="input-group">
+                <input type="hidden" name="light" value="{{ light.id }}">
+                <input type="hidden" name="cmd" value="default-color">
+                <select name="color" class="color-box form-control">
+                  {% for color in colors %}
+                    <option value="{{ color.hex }}" {% if color.hex == light.settings.hex %}selected="selected"{% endif %} style="background:{{ color.hex }};color:{{ color.hex }}">{{ color.title}}</option>
+                  {% endfor %}
+                </select>
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="submit">Save</button>
+                </span>
+              </div>
+            </div>
+          </form>
+        </div>
+        <h6><em>For lighting schedule, please use the Hue app on your phone.</em></h6>
       </div>
-    </div>
-    {{ light|dump }}
-  {% else %}
-    <strong>No lights found&hellip;</strong>
-  {% endfor %}
+    {% else %}
+      <div class="col-md-12">
+        <strong>No lights found&hellip;</strong>
+      </div>
+    {% endfor %}
+  </div>
 
   {% if unassignedButtons|length %}
     <h2>Unassigned Dash Buttons</h2>
@@ -63,10 +121,13 @@
   {% endif %}
 
   <script>
-  $('h2#date').html(moment().format('h:mma')); //Safest way to know we're showing the right timezone
+  $('h2#date').html('Last Update: ' + moment().format('h:mma')); //Safest way to know we're showing the right timezone
   setTimeout(function(){
     //Quickest way to hopefully always show proper state of the lights
     location.reload();
   }, 60 * 1000);
+  $('span.timer-countdown').each(function(i, span){
+    $(span).html(moment($(span).data('time')).fromNow());
+  });
   </script>
 {% endblock %}

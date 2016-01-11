@@ -21,9 +21,12 @@ router.get('/', function (req, res, next) {
     async.each(data.lights, function(light, callback){
       bridge.api.lightStatus(light.id, function(err, result){
         var dbLight = db('lights').find({id: light.id});
-        light.state = (result.on) ? 'On' : 'Off';
+        light.state = (result.state.on) ? 'On' : 'Off';
         light.result = result;
-        light.log = bridge.lightLog[light.id];
+        light.logs = bridge.lights[light.id].log;
+        if (bridge.lights[light.id].timer) {
+          light.timerTime = bridge.lights[light.id].timerTime.toString();
+        }
         if (typeof dbLight === 'object' && dbLight.settings) {
           light.settings = dbLight.settings;
         } else {
@@ -112,6 +115,7 @@ router.post('/', function (req, res, next) {
     });
   }
   if (req.body.cmd === 'turn-on-keep-on') {
+    req.log('Turning on light for ' + req.body.light);
     bridge.lights[req.body.light].turnOn();
   }
   if (req.body.cmd === 'turn-on-with-timer') {

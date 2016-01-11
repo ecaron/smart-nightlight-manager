@@ -5,10 +5,9 @@
     "node_modules/**/node_modules",
     "config/*.json"
   ],
-  "verbose": true,
+  "verbose": false,
   "env": {
-    "NODE_ENV": "development",
-    "DISABLE_BUTTON": true
+    "NODE_ENV": "development"
   },
   "ext": "js html"
 }

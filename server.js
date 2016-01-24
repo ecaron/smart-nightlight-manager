@@ -3,7 +3,6 @@
 var pkg = require('./package');
 var express = require('express');
 var session = require('express-session');
-var cookieParser = require('cookie-parser');
 var flash = require('connect-flash');
 var nunjucks = require('nunjucks');
 
@@ -15,7 +14,11 @@ var logger = require('./lib/logger');
 require('./lib/bridge');
 
 process.on('uncaughtException', function(err) {
-  console.log('Caught exception: ' + err);
+  if (process.env.NODE_ENV === 'production') {
+    console.log(err);
+  } else {
+    throw err;
+  }
 });
 
 var app = express();
@@ -28,17 +31,23 @@ nunjucks.configure('views', {
 });
 app.set('view engine', 'html');
 
-app.use(cookieParser('secret'));
 app.use(session({
   secret: 'secret',
   cookie: { maxAge: 60000 },
-  resave: false,
-  saveUninitialized: false
+  resave: true,
+  saveUninitialized: true
 }));
 app.use(flash());
 
-app.use('/scripts/', express.static('node_modules/moment'));
+app.use('/scripts/timepicker/', express.static('node_modules/timepicker'));
+app.use('/scripts/moment/', express.static('node_modules/moment'));
 app.use(express.static('public'));
+
+app.use(function(req, res, next){
+    res.locals.success_messages = req.flash('success');
+    res.locals.error_messages = req.flash('error');
+    next();
+});
 
 app.use(function (req, res, next) {
   req.log = function(type, message, meta) {

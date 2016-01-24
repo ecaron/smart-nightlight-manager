@@ -52,9 +52,9 @@
 
         <h4>Logs</h4>
         {% if light.logs|length %}
-          <ul>
+          <ul class="list-unstyled">
             {% for log in light.logs|sort(true) %}
-              <li><code style="width:100%">{{ log }}</code></li>
+              <li><code style="display:block;margin-bottom:2px">{{ log }}</code></li>
             {% endfor %}
           </ul>
         {% else %}
@@ -78,7 +78,7 @@
           </form>
           <form method="post" class="col-md-6">
             <div class="form-group">
-              <label class="control-label">Light Color</label>
+              <label class="control-label">Default Light Color</label>
               <div class="input-group">
                 <input type="hidden" name="light" value="{{ light.id }}">
                 <input type="hidden" name="cmd" value="default-color">
@@ -94,6 +94,62 @@
             </div>
           </form>
         </div>
+
+        <h4>Color Schedule</h4>
+        {% for scheduleId, schedule in light.colorSchedule %}
+          <div class="row">
+            <form method="post" class="col-md-10">
+              <input type="hidden" name="light" value="{{ light.id }}">
+              <input type="hidden" name="id" value="{{ scheduleId }}">
+              <input type="hidden" name="cmd" value="update-color-schedule">
+              <div class="form-group">
+                <div class="input-group">
+                  <input type="text" name="start_time" value="{{ schedule.start }}" class="time-input col-lg-3" placeholder="Start Time">
+                  <input type="text" name="end_time" value="{{ schedule.end }}" class="time-input col-lg-3" placeholder="End Time">
+                  <span class="col-lg-3">
+                    <select name="color" class="color-box form-control">
+                      {% for color in colors %}
+                        <option value="{{ color.hex }}" {% if color.hex == schedule.color %}selected="selected"{% endif %} style="background:{{ color.hex }};color:{{ color.hex }}">{{ color.title}}</option>
+                      {% endfor %}
+                    </select>
+                  </span>
+                  <span class="input-group-btn col-lg-3">
+                    <button class="btn btn-default" type="submit">Update</button>
+                  </span>
+                </div>
+              </div>
+            </form>
+            <form method="post" class="col-md-2">
+              <input type="hidden" name="light" value="{{ light.id }}">
+              <input type="hidden" name="id" value="{{ scheduleId }}">
+              <input type="hidden" name="cmd" value="delete-color-schedule">
+              <button class="btn btn-default" type="submit">Delete</button>
+            </form>
+          </div>
+        {% endfor %}
+        <div class="row">
+          <form method="post" class="col-md-12">
+            <input type="hidden" name="light" value="{{ light.id }}">
+            <input type="hidden" name="cmd" value="create-color-schedule">
+            <div class="form-group">
+              <div class="input-group">
+                <input type="text" name="start_time" class="time-input col-lg-3" placeholder="Start Time">
+                <input type="text" name="end_time" class="time-input col-lg-3" placeholder="End Time">
+                <span class="col-lg-3">
+                  <select name="color" class="color-box form-control">
+                    {% for color in colors %}
+                      <option value="{{ color.hex }}" style="background:{{ color.hex }};color:{{ color.hex }}">{{ color.title}}</option>
+                    {% endfor %}
+                  </select>
+                </span>
+                <span class="input-group-btn col-lg-3">
+                  <button class="btn btn-default" type="submit">Create</button>
+                </span>
+              </div>
+            </div>
+          </form>
+        </div>
+
         <h6><em>For lighting schedule, please use the Hue app on your phone.</em></h6>
       </div>
     {% else %}
@@ -129,5 +185,9 @@
   $('span.timer-countdown').each(function(i, span){
     $(span).html(moment($(span).data('time')).fromNow());
   });
+  $('button.close').on('click', function(){
+    $(this).parents('p').hide();
+  });
+  $('.time-input').timepicker();
   </script>
 {% endblock %}

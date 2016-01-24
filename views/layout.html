@@ -8,6 +8,9 @@
       {% include "includes/nav.html" %}
     {% endblock %}
     <div class="container">
+      {% block flash %}
+        {% include "includes/flash.html" %}
+      {% endblock %}
       <div class="row">
         {% block content %}{% endblock %}
       </div>

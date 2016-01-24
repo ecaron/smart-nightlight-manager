@@ -6,6 +6,7 @@ var async = require('async');
 var router = express.Router();
 var bridge = require('../lib/bridge');
 var db = require('../lib/db');
+var colorSchedule = require('../lib/color-schedule');
 
 router.use('/settings', require('./settings'));
 
@@ -27,11 +28,17 @@ router.get('/', function (req, res, next) {
         if (bridge.lights[light.id].timer) {
           light.timerTime = bridge.lights[light.id].timerTime.toString();
         }
+
+        light.settings = {};
         if (typeof dbLight === 'object' && dbLight.settings) {
           light.settings = dbLight.settings;
-        } else {
-          light.settings = {};
         }
+
+        light.colorSchedule = {};
+        if (typeof dbLight === 'object' && dbLight.colorSchedule) {
+          light.colorSchedule = dbLight.colorSchedule;
+        }
+
         templateData.lights[light.id] = light;
         return callback();
       });
@@ -58,71 +65,90 @@ router.post('/', function (req, res, next) {
   }
   var button;
   var light;
-  if (req.body.cmd === 'associate-button') {
-    button = db('buttons').find({mac: req.body.button});
-    if (button) {
-      button.light = req.body.light;
+  switch (req.body.cmd) {
+    case 'associate-button':
+      button = db('buttons').find({mac: req.body.button});
+      if (button) {
+        button.light = req.body.light;
+        return db.savePromise().then(function(){
+          req.flash('success', 'Button has been successfully associated with the light!');
+          res.redirect('/');
+        });
+      }
+      break;
+
+    case 'create-color-schedule':
+      return colorSchedule.create(db, req, res);
+      break;
+
+    case 'update-color-schedule':
+      return colorSchedule.update(db, req, res);
+      break;
+
+    case 'delete-color-schedule':
+      return colorSchedule.delete(db, req, res);
+      break;
+
+    case 'timer-length':
+      light = db('lights').find({id: req.body.light});
+      req.flash('success', 'Timer has been successfully set for the light!');
+      if (!light) {
+
+        db('lights').push(
+          { id: req.body.light,
+            settings: {
+              stayOnMinutes: req.body.minutes
+            }
+          }
+        );
+      } else {
+        if (!light.settings) {
+          light.settings = {};
+        }
+        light.settings.stayOnMinutes = req.body.minutes;
+        return db.savePromise().then(function(){
+          res.redirect('/');
+        });
+      }
+      break;
+
+    case 'default-color':
+      req.flash('success', 'Default color has been successfully set for the light!');
+      light = db('lights').find({id: req.body.light});
+      if (!light) {
+        db('lights').push(
+          { id: req.body.light,
+            settings: {
+              hex: req.body.color
+            }
+          }
+        );
+      } else {
+        if (!light.settings) {
+          light.settings = {};
+        }
+        light.settings.hex = req.body.color;
+      }
       return db.savePromise().then(function(){
         res.redirect('/');
       });
-    }
-  }
-  if (req.body.cmd === 'timer-length') {
-    light = db('lights').find({id: req.body.light});
-    if (!light) {
-      db('lights').push(
-        { id: req.body.light,
-          settings: {
-            stayOnMinutes: req.body.minutes
-          }
-        }
-      );
-    } else {
-      if (!light.settings) {
-        light.settings = {};
-      }
-      light.settings.stayOnMinutes = req.body.minutes;
-      return db.savePromise().then(function(){
-        res.redirect('/');
-      });
-    }
-  }
-  if (req.body.cmd === 'default-color') {
-    var rgb = [
-      parseInt(req.body.color.substring(1,2), 16),
-      parseInt(req.body.color.substring(3,4), 16),
-      parseInt(req.body.color.substring(5,6), 16)
-    ];
-    light = db('lights').find({id: req.body.light});
-    if (!light) {
-      db('lights').push(
-        { id: req.body.light,
-          settings: {
-            rgb: rgb,
-            hex: req.body.color
-          }
-        }
-      );
-    } else {
-      if (!light.settings) {
-        light.settings = {};
-      }
-      light.settings.rgb = rgb;
-      light.settings.hex = req.body.color;
-    }
-    return db.savePromise().then(function(){
-      res.redirect('/');
-    });
-  }
-  if (req.body.cmd === 'turn-on-keep-on') {
-    req.log('Turning on light for ' + req.body.light);
-    bridge.lights[req.body.light].turnOn();
-  }
-  if (req.body.cmd === 'turn-on-with-timer') {
-    bridge.lights[req.body.light].turnOnWithTimer();
-  }
-  if (req.body.cmd === 'turn-off') {
-    bridge.lights[req.body.light].turnOff();
+      break;
+
+    case 'turn-on-keep-on':
+      req.flash('success', 'Light has been turned on and will stay on!');
+      req.log('Turning on light for ' + req.body.light);
+      bridge.lights[req.body.light].turnOn();
+      break;
+
+    case 'turn-on-with-timer':
+      req.flash('success', 'Light has been turned on and timer has been started!');
+      bridge.lights[req.body.light].turnOnWithTimer();
+      break;
+
+    case 'turn-off':
+      req.flash('success', 'Light has been turned off!');
+      bridge.lights[req.body.light].turnOff();
+      break;
   }
 
   res.redirect('/');

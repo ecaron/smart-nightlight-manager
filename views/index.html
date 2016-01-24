@@ -188,6 +188,6 @@
   $('button.close').on('click', function(){
     $(this).parents('p').hide();
   });
-  $('.time-input').timepicker();
+  $('.time-input').timepicker({disableTextInput: true, disableTouchKeyboard: true, selectOnBlur: true, stopScrollPropagation: true});
   </script>
 {% endblock %}

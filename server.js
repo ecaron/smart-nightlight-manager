@@ -87,3 +87,8 @@ app.use(function(req, res, next) {
 app.listen(port, function () {
   console.log('Started %s. Listening on port %d', pkg.name, port);
 });
+
+// Once every 4 minutes, make sure that if the light is on
+// and that light has a color schedule, the scheduled color
+// is used
+setInterval(require('./lib/color-watcher'), 4 * 60 * 1000);

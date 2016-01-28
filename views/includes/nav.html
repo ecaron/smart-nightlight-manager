@@ -1,5 +1,5 @@
 <div class="navbar navbar-default" role="navigation">
-  <div class="container">
+  <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
         <span class="sr-only">Toggle navigation</span>
@@ -9,11 +9,17 @@
       </button>
       <a class="navbar-brand" href="#">Caron Nightlights</a>
     </div>
-    <div class="navbar-collapse collapse">
+    <div class="navbar-collapse collapse" style="position:relative">
+      <h4 class="visible-lg-block visible-md-block" style="position:absolute;right:5px;bottom:5px">Time: <span class="current-date"></span></h4>
+
       <ul class="nav navbar-nav">
         <li><a href="/">Overview</a></li>
-        <li><a href="/settings">Settings</a></li>
+        <!--
+          <li><a href="/settings">Settings</a></li>
+        -->
       </ul>
+
+
     </div><!--/.nav-collapse -->
   </div>
 </div>

@@ -119,7 +119,7 @@ router.post('/', function (req, res, next) {
         db('lights').push(
           { id: req.body.light,
             settings: {
-              hex: req.body.color
+              color: req.body.color
             }
           }
         );
@@ -127,7 +127,7 @@ router.post('/', function (req, res, next) {
         if (!light.settings) {
           light.settings = {};
         }
-        light.settings.hex = req.body.color;
+        light.settings.color = req.body.color;
       }
       return db.savePromise().then(function(){
         res.redirect('/');

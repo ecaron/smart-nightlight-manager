@@ -1,3 +1,20 @@
 .flash-boxes p {
   border-radius: 1em;
 }
+
+button, .button {
+    transition: all 0.3s ease 0s;
+}
+
+.expand-log {
+  cursor: pointer;
+}
+
+.hover-zone {
+  border-radius: 12px;
+}
+
+.hover-zone:hover {
+  background: #FFAE7A;
+  transition: all 0.3s ease 0s;
+}

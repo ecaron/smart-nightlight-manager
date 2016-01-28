@@ -27,7 +27,8 @@ var port = process.env.PORT || 3000;
 app.set('views', __dirname + '/views');
 nunjucks.configure('views', {
   autoescape: true,
-  express: app
+  express: app,
+  noCache: (process.env.NODE_ENV !== 'production')
 });
 app.set('view engine', 'html');
 

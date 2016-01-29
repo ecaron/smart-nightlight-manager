@@ -13,6 +13,7 @@
     "connect-flash": "0.1.1",
     "express": "^4.13.3",
     "express-session": "1.12.1",
+    "jsonfile": "^2.2.3",
     "lodash": "^3.10.1",
     "lowdb": "0.10.3",
     "moment": "^2.11.1",
@@ -30,6 +31,7 @@
   },
   "scripts": {
     "start": "node server",
+    "setup": "node setup",
     "lint": "semistandard | snazzy"
   }
 }

@@ -197,20 +197,38 @@
   </div>
 
   {% if unassignedButtons|length %}
-    <h2>Unassigned Dash Buttons</h2>
-    {% for unassignedButton in unassignedButtons %}
-      <h3>Button: {{ unassignedButton.name }}</h3>
-      <form method="post">
-        <input type="hidden" name="cmd" value="associate-button">
-        <input type="hidden" name="button" value="{{ unassignedButton.mac }}">
-        Light: <select name="light">
-          {% for lightId, light in lights %}
-            <option value="{{ lightId }}">{{ light.name}}</option>
-          {% endfor %}
-        </select>
-        <button class="btn btn-warning" type="submit">Save</button>
-      </form>
-    {% endfor %}
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Unassigned Dash Buttons</h2>
+      </div>
+        {% for unassignedButton in unassignedButtons %}
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">Button: {{ unassignedButton.name }}</div>
+              <div class="panel-body">
+                <form method="post" class="form-horizontal">
+                  <div class="form-group">
+                    <label class="col-xs-6 col-sm-4 control-label">Light</label>
+                    <div class="col-xs-6 col-sm-4">
+                      <select name="light" class="form-control">
+                        {% for lightId, light in lights %}
+                          <option value="{{ lightId }}">{{ light.name}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-xs-6 col-sm-4">
+                      <input type="hidden" name="cmd" value="associate-button">
+                      <input type="hidden" name="button" value="{{ unassignedButton.mac }}">
+                      <button class="btn btn-default" type="submit">Save</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
   {% endif %}
 
 {% endblock %}

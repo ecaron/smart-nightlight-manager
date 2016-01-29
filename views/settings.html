@@ -1,19 +1,34 @@
 {% extends "layout.html" %}
 
 {% block content %}
-  <div class="col-md-4">
-    <h2>Heading</h2>
-    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-    <p><a class="btn btn-default" href="#" role="button">View details »</a></p>
-  </div>
-  <div class="col-md-4">
-    <h2>Heading</h2>
-    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-    <p><a class="btn btn-default" href="#" role="button">View details »</a></p>
-  </div>
-  <div class="col-md-4">
-    <h2>Heading</h2>
-    <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-    <p><a class="btn btn-default" href="#" role="button">View details »</a></p>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">Add Dash Button</div>
+        <div class="panel-body">
+          <form method="post" class="form-horizontal">
+            <div class="form-group col-md-4">
+              <label for="button-name" class="col-xs-6 control-label">Button Name</label>
+              <div class="col-xs-6">
+                <input class="form-control" type="text" id="button-name" name="name" placeholder="Billy's Room">
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="button-mac" class="col-xs-6 control-label">Button Mac</label>
+              <div class="col-xs-6">
+                <input class="form-control" type="text" id="button-mac" name="mac" placeholder="00:11:22:33:44:55:66">
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <div class="col-xs-offset-6 col-xs-6">
+                <input type="hidden" name="cmd" value="add-button">
+                <button class="btn btn-default" type="submit">Save</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
   </div>
 {% endblock %}

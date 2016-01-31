@@ -54,7 +54,7 @@ You'll find plenty of other great tutorials on the web about running a Node.js a
 ## Screenshots
 | Desktop interface for monitor and control |
 | ----------------------------------------- |
-| ![desktop view](https://cloud.githubusercontent.com/assets/70704/12696098/d260035e-c726-11e5-8297-27ffc765358d.png) |
+| <img src="https://cloud.githubusercontent.com/assets/70704/12696098/d260035e-c726-11e5-8297-27ffc765358d.png" width="100%"> |
 
 | Mobile interface for monitor and control |
 | ---------------------------------------- |

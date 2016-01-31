@@ -7,7 +7,7 @@ I wanted my kids to have a nightlight in their room that:
 * Had programmable color
 * Had an adjustable timer (turns off X minutes after being turned on)
 * Had an interface to show history of button pushes (so I can see when they were awake)
-* Schedule the light to change color on a schedule (so at 7am it turns to blue to indicate "Ok, its morning time!")
+* Schedule the light to change color on a schedule (so at 7am it turns to blue to indicate "Ok, it's morning time!")
 
 ## Live Demos
 | Demo of button turning light on  |
@@ -61,7 +61,7 @@ You'll find plenty of other great tutorials on the web about running a Node.js a
 | ![mobile view](https://cloud.githubusercontent.com/assets/70704/12696099/d26159b6-c726-11e5-8952-de1e04d173e4.png) |
 
 ## To Root or Not To Root
-There is a [conversation](https://github.com/hortinstein/node-dash-button/issues/15) about running this application without root. But since its on my home personal server (Raspberry Pi), I don't mind it running as root. But you can follow/implement that conversation if you don't want to run this as root on your machine.
+There is a [conversation](https://github.com/hortinstein/node-dash-button/issues/15) about running this application without root. But since it's on my home personal server (Raspberry Pi), I don't mind it running as root. But you can follow/implement that conversation if you don't want to run this as root on your machine.
 
 ## Acknowledgements
 * [Original blog about hacking the Dash button](https://medium.com/p/794214b0bdd8)

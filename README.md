@@ -33,7 +33,7 @@ For the most part, it is a straight-forward Node.js application. After downloadi
 * `npm install`
 * `npm run setup`
 * `sudo npm start`
- * *Yes, running it as root isn't ideal. But the app is listening to your network for packets from the Dash button. Later in the readme I discussing the workarounds if this concerns you.*
+ * *Yes, running it as root isn't ideal. But the app is listening to your network for packets from the Dash button. Later in the readme I discuss the workarounds if this concerns you.*
 
 You can now access http://localhost:3000/ and view the complete interface. (On my home network, I put this behind nginx and set the in-house DNS to know it as "nightlight". So now babysitters and family just go to http://nightlight/ to use it.)
 

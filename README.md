@@ -2,19 +2,21 @@
 Powered by Node.JS, [Philips Hue](http://www2.meethue.com/en-us/) and [Amazon Dash](https://www.amazon.com/oc/dash-button).
 
 ## Why Does This Exist?
-I my kids to have a nightlight in their room that:
+I wanted my kids to have a nightlight in their room that:
 
-* Could have adjustable color
+* Had programmable color
 * Had an adjustable timer (turns off X minutes after being turned on)
-* Had an interface to show log of button pushes (so I can see when they were awake)
+* Had an interface to show history of button pushes (so I can see when they were awake)
 * Schedule the light to change color on a schedule (so at 7am it turns to blue to indicate "Ok, its morning time!")
 
 ## Live Demos
-*Demo of button turning light on*
-![light turn on](https://cloud.githubusercontent.com/assets/70704/12696100/d261de2c-c726-11e5-9022-74036dab6a3a.gif)
+| Demo of button turning light on  |
+| -------------------------------- |
+| ![light turn on](https://cloud.githubusercontent.com/assets/70704/12696100/d261de2c-c726-11e5-9022-74036dab6a3a.gif) |
 
-*Demo of button turning light off*
-![light turn off](https://cloud.githubusercontent.com/assets/70704/12696097/d25e4ab4-c726-11e5-91a0-861b13149c83.gif)
+| Demo of button turning light off |
+| -------------------------------- |
+| ![light turn off](https://cloud.githubusercontent.com/assets/70704/12696097/d25e4ab4-c726-11e5-91a0-861b13149c83.gif) |
 
 
 ## What Does This Do?
@@ -33,7 +35,7 @@ For the most part, it is a straight-forward Node.js application. After downloadi
 * `sudo npm start`
  * *Yes, running it as root isn't ideal. But the app is listening to your network for packets from the Dash button. Later in the readme I discussing the workarounds if this concerns you.*
 
-You can now access http://localhost:3000/ and view the complete interface.
+You can now access http://localhost:3000/ and view the complete interface. (On my home network, I put this behind nginx and set the in-house DNS to know it as "nightlight". So now babysitters and family just go to http://nightlight/ to use it.)
 
 ### Finding A Dash Button
 Per the [tutorial of node-dash-button](https://github.com/hortinstein/node-dash-button/):
@@ -50,14 +52,16 @@ You'll find plenty of other great tutorials on the web about running a Node.js a
 * https://serversforhackers.com/video/process-monitoring-with-supervisord
 
 ## Screenshots
-*Desktop interface for monitor and control*
-![desktop view](https://cloud.githubusercontent.com/assets/70704/12696098/d260035e-c726-11e5-8297-27ffc765358d.png)
+| Desktop interface for monitor and control |
+| ----------------------------------------- |
+| ![desktop view](https://cloud.githubusercontent.com/assets/70704/12696098/d260035e-c726-11e5-8297-27ffc765358d.png) |
 
-*Mobile interface for monitor and control*
-![mobile view](https://cloud.githubusercontent.com/assets/70704/12696099/d26159b6-c726-11e5-8952-de1e04d173e4.png)
+| Mobile interface for monitor and control |
+| ---------------------------------------- |
+| ![mobile view](https://cloud.githubusercontent.com/assets/70704/12696099/d26159b6-c726-11e5-8952-de1e04d173e4.png) |
 
 ## To Root or Not To Root
-There is a [conversation](https://github.com/hortinstein/node-dash-button/issues/15) about running this application without root. But since its on my home personal server (Raspberry Pi),I don't mind it running as root. But you can follow/implement that conversation if you don't want to run this as root on your machine.
+There is a [conversation](https://github.com/hortinstein/node-dash-button/issues/15) about running this application without root. But since its on my home personal server (Raspberry Pi), I don't mind it running as root. But you can follow/implement that conversation if you don't want to run this as root on your machine.
 
 ## Acknowledgements
 * [Original blog about hacking the Dash button](https://medium.com/p/794214b0bdd8)

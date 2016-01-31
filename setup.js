@@ -1,4 +1,4 @@
-var HueApi = require("node-hue-api");
+var HueApi = require('node-hue-api');
 var async = require('async');
 var jsonfile = require('jsonfile');
 
@@ -8,27 +8,27 @@ if (process.env.TIMEOUT) {
 }
 
 var databaseModel = {
-  "buttons": [],
-  "bridge": [],
-  "lights": []
+  'buttons': [],
+  'bridge': [],
+  'lights': []
 };
 
-var displayBridges = function(bridge) {
+var displayBridges = function (bridge) {
   if (bridge.length === 0) {
-    console.warn("No bridges found. Do you need to set/create the TIMEOUT environment variable?");
+    console.warn('No bridges found. Do you need to set/create the TIMEOUT environment variable?');
     return;
   }
-  console.log("Hue Bridges Found: " + JSON.stringify(bridge));
+  console.log('Hue Bridges Found: ' + JSON.stringify(bridge));
   var hue = new HueApi.HueApi();
   var newUser = false;
 
   async.whilst(
-    function() { return newUser === false; },
-    function(callback){
-      hue.createUser(bridge[0].ipaddress, function(err, user) {
+    function () { return newUser === false; },
+    function (callback) {
+      hue.createUser(bridge[0].ipaddress, function (err, user) {
         if (err) {
           if (err.message === 'link button not pressed') {
-            console.log("Bridge button has not been pressed. Pausing 5 seconds while you press it...");
+            console.log('Bridge button has not been pressed. Pausing 5 seconds while you press it...');
             setTimeout(callback, 5 * 1000);
           } else {
             return callback(err);
@@ -39,7 +39,7 @@ var displayBridges = function(bridge) {
         }
       });
     },
-    function(err){
+    function (err) {
       if (err) {
         console.warn(err.message);
         return;
@@ -49,7 +49,7 @@ var displayBridges = function(bridge) {
         if (err) {
           console.error(err);
         } else {
-          console.log("Database is setup. You may run 'npm start'");
+          console.log('Database is setup. You may run "npm start"');
         }
       });
     }

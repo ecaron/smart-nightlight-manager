@@ -1,6 +1,7 @@
-/*global $:false */
+/*global $:false, moment:false, location:false, confirm:false */
 'use strict';
-$( document ).ready(function() {
+
+$(document).ready(function () {
   $('ul.navbar-nav li').each(function (i, elem) {
     if ($('a', elem).attr('href') === window.location.pathname) {
       $(elem).addClass('active');
@@ -8,19 +9,20 @@ $( document ).ready(function() {
   });
 
   if ($('.current-date').length) {
-    $('.current-date').html(moment().format('h:mma')); //Safest way to know we're showing the right timezone
+    // Safest way to know we're showing the right timezone
+    $('.current-date').html(moment().format('h:mma'));
   }
 
-  setTimeout(function(){
-    //Quickest way to hopefully always show proper state of the lights
+  setTimeout(function () {
+    // Quickest way to hopefully always show proper state of the lights
     location.replace('/?skipLog=1');
-  }, 60 * 1000);    
+  }, 60 * 1000);
 
-  $('span.timer-countdown').each(function(i, span){
+  $('span.timer-countdown').each(function (i, span) {
     $(span).html(moment($(span).data('time')).fromNow());
   });
 
-  $('button.close').on('click', function(){
+  $('button.close').on('click', function () {
     $(this).parents('p').hide();
   });
 
@@ -28,13 +30,13 @@ $( document ).ready(function() {
     $('.time-input').timepicker({disableTextInput: true, disableTouchKeyboard: true, selectOnBlur: true, stopScrollPropagation: true});
   }
 
-  $('.confirm-submit').on('submit', function(e){
+  $('.confirm-submit').on('submit', function (e) {
     if (!confirm('Are you sure?')) {
       e.preventDefault();
     }
   });
 
-  $('.expand-log').on('click', function(){
+  $('.expand-log').on('click', function () {
     $(this).parents('.panel').find('.panel-body').removeClass('hide');
     $(this).remove();
   });

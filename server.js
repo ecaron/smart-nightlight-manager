@@ -13,7 +13,7 @@ var logger = require('./lib/logger');
 // no Hue to connect to
 require('./lib/bridge');
 
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
   if (process.env.NODE_ENV === 'production') {
     console.log(err);
   } else {
@@ -44,14 +44,14 @@ app.use('/scripts/timepicker/', express.static('node_modules/timepicker'));
 app.use('/scripts/moment/', express.static('node_modules/moment'));
 app.use(express.static('public'));
 
-app.use(function(req, res, next){
-    res.locals.success_messages = req.flash('success');
-    res.locals.error_messages = req.flash('error');
-    next();
+app.use(function (req, res, next) {
+  res.locals.success_messages = req.flash('success');
+  res.locals.error_messages = req.flash('error');
+  next();
 });
 
 app.use(function (req, res, next) {
-  req.log = function(type, message, meta) {
+  req.log = function (type, message, meta) {
     if (typeof meta !== 'object') {
       meta = {};
     }
@@ -74,14 +74,14 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(require('morgan')('combined', { 'stream': logger.stream }));
 app.use(require('./controllers'));
 
-app.use(function(err, req, res, next) {
-  //jshint unused:false
+app.use(function (err, req, res, next) {
+  // jshint unused:false
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
 
-app.use(function(req, res, next) {
-  //jshint unused:false
+app.use(function (req, res, next) {
+  // jshint unused:false
   res.status(404).send('Sorry cant find that!');
 });
 

@@ -29,6 +29,13 @@
     "semistandard": "*",
     "snazzy": "^2.0.1"
   },
+  "semistandard": {
+    "ignore": [
+      "public/scripts/bootstrap.min.js",
+      "public/scripts/jquery.min.js",
+      "public/scripts/jscolor.js"
+    ]
+  },
   "scripts": {
     "start": "node server",
     "setup": "node setup",

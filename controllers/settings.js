@@ -21,11 +21,10 @@ router.post('/', function (req, res, next) {
         }
       );
 
-      return db.savePromise().then(function(){
+      return db.savePromise().then(function () {
         req.flash('success', 'Button has been successfully added to your system!');
         res.redirect('/');
       });
-      break;
   }
 });
 

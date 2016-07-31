@@ -151,6 +151,25 @@ router.post('/', function (req, res, next) {
       req.flash('success', 'Light has been turned off!');
       bridge.lights[req.body.light].turnOff();
       break;
+
+    case 'toggle-keep-on':
+    case 'toggle-with-timer':
+      bridge.api.lightStatus(req.body.light, function (err, result) {
+        if (err) {
+          return next(err);
+        }
+        if (result.state.on) {
+          bridge.lights[req.body.light].turnOff();
+          res.send('Turned off');
+        } else if (req.body.cmd === 'toggle-keep-on') {
+          bridge.lights[req.body.light].turnOn();
+          res.send('Turned on, keeping on');
+        } else {
+          bridge.lights[req.body.light].turnOnWithTimer();
+          res.send('Turned on, timer started');
+        }
+      });
+      return;
   }
 
   res.redirect('/');

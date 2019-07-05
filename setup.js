@@ -8,7 +8,6 @@ if (process.env.TIMEOUT) {
 }
 
 var databaseModel = {
-  'buttons': [],
   'bridge': [],
   'lights': []
 };
@@ -44,7 +43,7 @@ var displayBridges = function (bridge) {
         console.warn(err.message);
         return;
       }
-      databaseModel.bridge.push({ip: bridge[0].ipaddress, username: newUser});
+      databaseModel.bridge.push({ ip: bridge[0].ipaddress, username: newUser });
       jsonfile.writeFile('./config/db2.json', databaseModel, function (err) {
         if (err) {
           console.error(err);

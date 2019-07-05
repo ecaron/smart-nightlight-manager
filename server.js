@@ -5,6 +5,7 @@ var express = require('express');
 var session = require('express-session');
 var flash = require('connect-flash');
 var nunjucks = require('nunjucks');
+var path = require('path');
 
 var bodyParser = require('body-parser');
 var logger = require('./lib/logger');
@@ -24,7 +25,7 @@ process.on('uncaughtException', function (err) {
 var app = express();
 var port = process.env.PORT || 3000;
 
-app.set('views', __dirname + '/views');
+app.set('views', path.resolve(__dirname, 'views'));
 nunjucks.configure('views', {
   autoescape: true,
   express: app,
@@ -69,7 +70,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(require('morgan')('combined', { 'stream': logger.stream }));
 app.use(require('./controllers'));
@@ -89,7 +90,7 @@ app.listen(port, function () {
   console.log('Started %s. Listening on port %d', pkg.name, port);
 });
 
-// Once every 4 minutes, make sure that if the light is on
+// Once each minute, make sure that if the light is on
 // and that light has a color schedule, the scheduled color
 // is used
-setInterval(require('./lib/color-watcher'), 4 * 60 * 1000);
+setInterval(require('./lib/color-watcher'), 60 * 1000);

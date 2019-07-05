@@ -13,18 +13,6 @@ router.post('/', function (req, res, next) {
     return next(new Error('POST without a cmd'));
   }
   switch (req.body.cmd) {
-    case 'add-button':
-
-      db('buttons').push(
-        { mac: req.body.mac,
-          name: req.body.name
-        }
-      );
-
-      return db.savePromise().then(function () {
-        req.flash('success', 'Button has been successfully added to your system!');
-        res.redirect('/');
-      });
   }
 });
 

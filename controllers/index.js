@@ -24,7 +24,7 @@ router.get('/', function (req, res, next) {
         if (err) {
           return next(err);
         }
-        var dbLight = db('lights').find({id: light.id});
+        var dbLight = db.get('lights').find({id: light.id}).value();
         light.state = (result.state.on) ? 'On' : 'Off';
         light.result = result;
         light.logs = bridge.lights[light.id].log;
@@ -47,7 +47,7 @@ router.get('/', function (req, res, next) {
       });
     }, function () {
       templateData.unassignedButtons = [];
-      _.each(db('buttons').value(), function (button) {
+      _.each(db.get('buttons').value(), function (button) {
         if (button.light) {
           templateData.lights[button.light].button = button;
         } else {
@@ -68,13 +68,12 @@ router.post('/', function (req, res, next) {
   var light;
   switch (req.body.cmd) {
     case 'associate-button':
-      button = db('buttons').find({mac: req.body.button});
+      button = db.get('buttons').find({mac: req.body.button}).value();
       if (button) {
         button.light = req.body.light;
-        return db.savePromise().then(function () {
-          req.flash('success', 'Button has been successfully associated with the light!');
-          res.redirect('/');
-        });
+        db.write();
+        req.flash('success', 'Button has been successfully associated with the light!');
+        res.redirect('/');
       } else {
         req.flash('error', 'Button not found.');
         res.redirect('/');
@@ -91,39 +90,38 @@ router.post('/', function (req, res, next) {
       return colorSchedule.delete(db, req, res);
 
     case 'timer-length':
-      light = db('lights').find({id: req.body.light});
+      light = db.get('lights').find({id: req.body.light}).value();
       req.flash('success', 'Timer has been successfully set for the light!');
       if (!light) {
-        db('lights').push(
+        db.get('lights').push(
           { id: req.body.light,
             settings: {
               stayOnMinutes: req.body.minutes
             }
           }
-        );
+        ).write();
         res.redirect('/');
       } else {
         if (!light.settings) {
           light.settings = {};
         }
         light.settings.stayOnMinutes = req.body.minutes;
-        db.savePromise().then(function () {
-          res.redirect('/');
-        });
+        db.write();
+        res.redirect('/');
       }
       return;
 
     case 'default-color':
       req.flash('success', 'Default color has been successfully set for the light!');
-      light = db('lights').find({id: req.body.light});
+      light = db.get('lights').find({id: req.body.light}).value();
       if (!light) {
-        db('lights').push(
+        db.get('lights').push(
           { id: req.body.light,
             settings: {
               color: req.body.color
             }
           }
-        );
+        ).write();
         res.redirect('/');
       } else {
         if (!light.settings) {
@@ -131,9 +129,8 @@ router.post('/', function (req, res, next) {
         }
         light.settings.color = req.body.color;
       }
-      db.savePromise().then(function () {
-        res.redirect('/');
-      });
+      db.write();
+      res.redirect('/');
       return;
 
     case 'turn-on-keep-on':

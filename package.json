@@ -37,6 +37,7 @@
   "scripts": {
     "start": "node server",
     "setup": "node setup",
-    "lint": "semistandard | snazzy"
+    "lint": "semistandard | snazzy",
+    "semistandard": "semistandard --fix"
   }
 }

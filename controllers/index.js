@@ -1,7 +1,6 @@
 'use strict';
 
 var express = require('express');
-var _ = require('lodash');
 var async = require('async');
 var router = express.Router();
 var bridge = require('../lib/bridge');
@@ -24,7 +23,7 @@ router.get('/', function (req, res, next) {
         if (err) {
           return next(err);
         }
-        var dbLight = db.get('lights').find({id: light.id}).value();
+        var dbLight = db.get('lights').find({ id: light.id }).value();
         light.state = (result.state.on) ? 'On' : 'Off';
         light.result = result;
         light.logs = bridge.lights[light.id].log;
@@ -46,15 +45,6 @@ router.get('/', function (req, res, next) {
         return callback();
       });
     }, function () {
-      templateData.unassignedButtons = [];
-      _.each(db.get('buttons').value(), function (button) {
-        if (button.light) {
-          templateData.lights[button.light].button = button;
-        } else {
-          templateData.unassignedButtons.push(button);
-        }
-      });
-
       res.render('index', templateData);
     });
   });
@@ -64,22 +54,8 @@ router.post('/', function (req, res, next) {
   if (!req.body.cmd) {
     return next(new Error('POST without a cmd'));
   }
-  var button;
   var light;
   switch (req.body.cmd) {
-    case 'associate-button':
-      button = db.get('buttons').find({mac: req.body.button}).value();
-      if (button) {
-        button.light = req.body.light;
-        db.write();
-        req.flash('success', 'Button has been successfully associated with the light!');
-        res.redirect('/');
-      } else {
-        req.flash('error', 'Button not found.');
-        res.redirect('/');
-      }
-      break;
-
     case 'create-color-schedule':
       return colorSchedule.create(db, req, res);
 
@@ -90,7 +66,7 @@ router.post('/', function (req, res, next) {
       return colorSchedule.delete(db, req, res);
 
     case 'timer-length':
-      light = db.get('lights').find({id: req.body.light}).value();
+      light = db.get('lights').find({ id: req.body.light }).value();
       req.flash('success', 'Timer has been successfully set for the light!');
       if (!light) {
         db.get('lights').push(
@@ -113,7 +89,7 @@ router.post('/', function (req, res, next) {
 
     case 'default-color':
       req.flash('success', 'Default color has been successfully set for the light!');
-      light = db.get('lights').find({id: req.body.light}).value();
+      light = db.get('lights').find({ id: req.body.light }).value();
       if (!light) {
         db.get('lights').push(
           { id: req.body.light,

@@ -1,7 +1,6 @@
 'use strict';
 
 var express = require('express');
-var db = require('../lib/db');
 var router = express.Router();
 
 router.get('/', function (req, res) {

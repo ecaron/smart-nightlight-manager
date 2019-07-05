@@ -1,4 +1,4 @@
-/*global $:false, moment:false, location:false, confirm:false */
+/* global $:false, moment:false, location:false, confirm:false */
 'use strict';
 
 $(document).ready(function () {
@@ -27,7 +27,7 @@ $(document).ready(function () {
   });
 
   if ($('.time-input').length) {
-    $('.time-input').timepicker({disableTextInput: true, disableTouchKeyboard: true, selectOnBlur: true, stopScrollPropagation: true});
+    $('.time-input').timepicker({ disableTextInput: true, disableTouchKeyboard: true, selectOnBlur: true, stopScrollPropagation: true });
   }
 
   $('.confirm-submit').on('submit', function (e) {

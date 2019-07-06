@@ -10,7 +10,7 @@
 
   <div class="row">
     {% for lightId, light in lights %}
-      <div class="col-md-6 col-sm-12 hover-zone">
+      <div class="col-md-8 col-sm-12 hover-zone">
         <div class="visible-xs-block visible-sm-block visible-md-block">
           <hr>
         </div>
@@ -143,9 +143,11 @@
                       </div>
                       <div class="col-xs-6 col-sm-4">
                         <select name="brightness" class="form-control">
-                          <option value="minimum" {% if schedule.brightness == 'minimum' %}selected="selected"{% endif %}>Dim</option>
-                          <option value="medium" {% if schedule.brightness == 'medium' %}selected="selected"{% endif %}>Normal</option>
-                          <option value="maximum" {% if schedule.brightness == 'maximum' %}selected="selected"{% endif %}>Bright</option>
+                          <option value="0" {% if schedule.brightness == "0" %}selected="selected"{% endif %}>0% (Dimmest)</option>
+                          {% for i in range(10, 90, 10) -%}
+                            <option value="{{ i }}" {% if schedule.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
+                          {%- endfor %}
+                          <option value="100" {% if schedule.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
                         </select>
                         <input type="hidden" name="light" value="{{ light.id }}">
                         <input type="hidden" name="id" value="{{ scheduleId }}">
@@ -180,16 +182,18 @@
                   <div class="col-xs-6 col-sm-4">
                     <input name="color" class="jscolor form-control" value="">
                     <select name="state" class="form-control">
-                      <option value="asis" {% if schedule.state == 'asis' %}selected="selected"{% endif %}>Leave</option>
-                      <option value="on" {% if schedule.state == 'on' %}selected="selected"{% endif %}>Turn On</option>
-                      <option value="off" {% if schedule.state == 'off' %}selected="selected"{% endif %}>Turn Off</option>
+                      <option value="asis">Leave</option>
+                      <option value="on">Turn On</option>
+                      <option value="off">Turn Off</option>
                     </select>
                   </div>
                   <div class="col-xs-6 col-sm-4">
                     <select name="brightness" class="form-control">
-                      <option value="minimum" {% if schedule.brightness == 'minimum' %}selected="selected"{% endif %}>Dim</option>
-                      <option value="medium" {% if schedule.brightness == 'medium' %}selected="selected"{% endif %}>Normal</option>
-                      <option value="maximum" {% if schedule.brightness == 'maximum' %}selected="selected"{% endif %}>Bright</option>
+                      <option value="0">0% (Dimmest)</option>
+                      {% for i in range(10, 90, 10) -%}
+                        <option value="{{ i }}">{{ i }}%</option>
+                      {%- endfor %}
+                      <option value="100">100% (Brightest)</option>
                     </select>
                     <input type="hidden" name="light" value="{{ light.id }}">
                     <input type="hidden" name="cmd" value="create-color-schedule">
@@ -209,7 +213,44 @@
         </div>
       </div>
     {% endfor %}
-
   </div>
 
+  <div class="row">
+    <div class="col-md-8 col-sm-12 hover-zone">
+      <h2>Experiment</h2>
+      <div class="row">
+        <form method="post" action="#" class="col-xs-10 col-md-9 form-horizontal" id="light-experiment">
+          <div class="form-group">
+            <div class="col-xs-6 col-sm-3">
+              <select name="light" class="form-control">
+                <option value="">--Select One</option>
+                {% for lightId, light in lights %}
+                  <option value="{{lightId}}">{{ light.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+              <input name="color" class="jscolor form-control" value="">
+            </div>
+            <div class="col-xs-6 col-sm-3">
+              <select name="brightness" class="form-control">
+                <option value="0">0% (Dimmest)</option>
+                {% for i in range(10, 90, 10) -%}
+                  <option value="{{ i }}">{{ i }}%</option>
+                {%- endfor %}
+                <option value="100">100% (Brightest)</option>
+              </select>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+              <input type="hidden" name="intend_state" id="intend_state">
+              <button class="btn btn-default" type="submit" onclick="$('#intend_state').val('on')" value="on">Turn On</button>
+              <button class="btn btn-default" type="submit" onclick="$('#intend_state').val('off')" value="off">Turn Off</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <a id="suggestRefresh" style="position:fixed;right:10px;bottom:10px;font-size:200%" href="/?skipLog=1">Page Should Be Refreshed</a>
 {% endblock %}

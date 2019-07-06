@@ -1,4 +1,4 @@
-/* global $:false, moment:false, location:false, confirm:false */
+/* global $:false, moment:false, confirm:false */
 'use strict';
 
 $(document).ready(function () {
@@ -14,9 +14,9 @@ $(document).ready(function () {
   }
 
   setTimeout(function () {
-    // Quickest way to hopefully always show proper state of the lights
-    location.replace('/?skipLog=1');
+    $('#suggestRefresh').show();
   }, 60 * 1000);
+  $('#suggestRefresh').hide();
 
   $('span.timer-countdown').each(function (i, span) {
     $(span).html(moment($(span).data('time')).fromNow());
@@ -39,5 +39,20 @@ $(document).ready(function () {
   $('.expand-log').on('click', function () {
     $(this).parents('.panel').find('.panel-body').removeClass('hide');
     $(this).remove();
+  });
+
+  $('#light-experiment').on('submit', function (e) {
+    e.preventDefault();
+    var data = {
+      cmd: 'experiment'
+    };
+    $.each($(this).serializeArray(), function (i, field) {
+      data[field.name] = field.value;
+    });
+    $.ajax({
+      type: 'POST',
+      url: '/',
+      data: data
+    });
   });
 });

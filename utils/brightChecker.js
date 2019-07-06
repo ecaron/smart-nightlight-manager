@@ -5,6 +5,11 @@ var hue = require('node-hue-api');
 var hex2rgb = require('../lib/hex2rgb');
 var db = require('../lib/db');
 
+if (!process.env.LIGHT) {
+  console.warn('LIGHT must be set as an environment variable so we know what to target');
+  process.exit(1);
+}
+
 var bridgeInfo = db.get('bridge').first().value();
 
 if (!bridgeInfo) {
@@ -30,7 +35,7 @@ setInterval(function () {
   if (brightness === 100) process.exit();
   brightness += 10;
   state.rgb(hex2rgb('FFFFFF'));
-  api.setLightState(4, state, function (err, lights) {
+  api.setLightState(process.env.LIGHT, state, function (err, lights) {
     if (err) console.log(err);
   });
 }, 5000);

@@ -5,6 +5,7 @@ var async = require('async');
 var router = express.Router();
 var bridge = require('../lib/bridge');
 var db = require('../lib/db');
+var hex2rgb = require('../lib/hex2rgb');
 var colorSchedule = require('../lib/color-schedule');
 
 router.use('/settings', require('./settings'));
@@ -142,6 +143,23 @@ router.post('/', function (req, res, next) {
           res.send('Turned on, timer started');
         }
       });
+      return;
+
+    case 'experiment':
+      if (req.body.light) {
+        var state = bridge.lightState.create();
+        if (req.body.intend_state === 'on') {
+          state.on();
+          state.brightness(req.body.brightness);
+          state.rgb(hex2rgb(req.body.color));
+        } else {
+          state.off();
+        }
+        bridge.api.setLightState(req.body.light, state, function (err, lights) {
+          if (err) console.log(err);
+        });
+      }
+      res.send('Success');
       return;
   }
 

@@ -1,7 +1,11 @@
-var fs = require('fs')
-var HueApi = require('node-hue-api')
-var async = require('async')
-var jsonfile = require('jsonfile')
+require('dotenv').config()
+
+const fs = require('fs')
+const HueApi = require('node-hue-api').v3
+const jsonfile = require('jsonfile')
+
+const APPLICATION_NAME = process.env.SITE_NAME || 'Nightlight System'
+const DEVICE_NAME = 'Web Interface'
 
 if (fs.existsSync('./config/db.json')) {
   console.warn('setup cannot be run if config/db.json already exists.')
@@ -9,57 +13,41 @@ if (fs.existsSync('./config/db.json')) {
   process.exit(1)
 }
 
-var timeout = 5000 // 5 seconds
-if (process.env.TIMEOUT) {
-  timeout = process.env.TIMEOUT * 1000
-}
-
-var databaseModel = {
+const databaseModel = {
   bridge: [],
   lights: []
 }
 
-var displayBridges = function (bridge) {
-  if (bridge.length === 0) {
-    console.warn('No bridges found. Do you need to set/create the TIMEOUT environment variable?')
-    return
-  }
-  console.log('Hue Bridges Found: ' + JSON.stringify(bridge))
-  var hue = new HueApi.HueApi()
-  var newUser = false
-
-  async.whilst(
-    function () { return newUser === false },
-    function (callback) {
-      hue.createUser(bridge[0].ipaddress, function (err, user) {
-        if (err) {
-          if (err.message === 'link button not pressed') {
-            console.log('Bridge button has not been pressed. Pausing 5 seconds while you press it...')
-            setTimeout(callback, 5 * 1000)
-          } else {
-            return callback(err)
-          }
-        } else {
-          newUser = user
-          return callback()
-        }
-      })
-    },
-    function (err) {
-      if (err) {
-        console.warn(err.message)
-        return
-      }
-      databaseModel.bridge.push({ ip: bridge[0].ipaddress, username: newUser })
-      jsonfile.writeFile('./config/db.json', databaseModel, function (err) {
-        if (err) {
-          console.error(err)
-        } else {
-          console.log('Database is setup. You may run "npm start"')
-        }
-      })
+HueApi.discovery.nupnpSearch()
+  .then(searchResults => {
+    if (searchResults.length === 0) {
+      throw new Error('No bridges found')
     }
-  )
-}
-
-HueApi.upnpSearch(timeout).then(displayBridges).done()
+    console.log(`${searchResults.length} Hue Bridges Found`)
+    const host = searchResults[0].ipaddress
+    databaseModel.bridge.push({
+      ip: searchResults[0].ipaddress
+    })
+    return HueApi.api.createLocal(host).connect()
+  })
+  .then(api => {
+    return api.users.createUser(APPLICATION_NAME, DEVICE_NAME)
+  })
+  .then(createdUser => {
+    console.log('User successfully created on local bridge')
+    databaseModel.bridge[0].username = createdUser
+    jsonfile.writeFile('./config/db.json', databaseModel, function (err) {
+      if (err) {
+        console.error(err)
+      } else {
+        console.log('Database is setup. You may run "npm start"')
+      }
+    })
+  })
+  .catch(err => {
+    if (typeof err.getHueErrorType !== 'undefined' && err.getHueErrorType() === 101) {
+      console.error('You need to press the Link Button on the bridge first.')
+    } else {
+      console.error(`Unexpected Error: ${err.message}`)
+    }
+  })

@@ -13,7 +13,6 @@ router.post('/', function (req, res, next) {
     return next(new Error('POST without a cmd'))
   }
   if (req.body.cmd === 'add-button') {
-    // req.flash('success', 'Default color has been successfully set for the light!');
     const maxEntry = db.get('lights').sortBy('id').reverse().take(1).value()[0]
     const newEntry = {
       id: String(parseInt(maxEntry.id) + 1),
@@ -27,6 +26,7 @@ router.post('/', function (req, res, next) {
           return next(new Error('POST without a cmd'))
         }
         newEntry.settings = newConfig
+        req.flash('success', `Light "${newConfig.name}" has been created`)
       } catch (e) {
         return next(e)
       }

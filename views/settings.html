@@ -2,8 +2,32 @@
 
 {% block content %}
   <div class="row">
-    <div class="col-md-12">
-      No settings to show. (This used to be filled with Dash Button configs.)
+    <div class="col-md-8 col-sm-12 hover-zone">
+      <h2>Add Non-Hue Light</h2>
+      <p>Currently supports:</p>
+      <ul>
+        <li><a href="https://github.com/jasoncoon/esp8266-fastled-webserver">FastLED + ESP8266 Web Server</a></li>
+      </ul>
+      <div class="row">
+        <form method="post" class="col-xs-10 col-md-9 form-horizontal">
+          <div class="form-group">
+            <div class="col-xs-6 col-sm-3">
+              <select name="light" class="form-control">
+                <option value="">--Type</option>
+                <option value="fastled">FastLED + ESP8266 Web Server</option>
+              </select>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+              <textarea name="config" class="form-control"></textarea>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+              <input type="hidden" name="cmd" value="add-button">
+              <button class="btn btn-default" type="submit">Save</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
+
 {% endblock %}

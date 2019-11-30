@@ -1,6 +1,14 @@
+var fs = require('fs');
 var HueApi = require('node-hue-api');
 var async = require('async');
 var jsonfile = require('jsonfile');
+
+
+if (fs.existsSync('./config/db.json')) {
+  console.warn('setup cannot be run if config/db.json already exists.');
+  console.warn('Please delete the file if you are trying to do a fresh install.');
+  process.exit(1);
+}
 
 var timeout = 5000; // 5 seconds
 if (process.env.TIMEOUT) {
@@ -44,7 +52,7 @@ var displayBridges = function (bridge) {
         return;
       }
       databaseModel.bridge.push({ ip: bridge[0].ipaddress, username: newUser });
-      jsonfile.writeFile('./config/db2.json', databaseModel, function (err) {
+      jsonfile.writeFile('./config/db.json', databaseModel, function (err) {
         if (err) {
           console.error(err);
         } else {

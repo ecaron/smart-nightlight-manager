@@ -9,11 +9,11 @@ var path = require('path')
 
 var bodyParser = require('body-parser')
 var logger = require('./lib/logger')
-var colorWatcher = require('./lib/color-watcher')
+var lightWatcher = require('./lib/light-watcher')
 
 // Required early on see we can just shut it all down if there's
 // no Hue to connect to
-require('./lib/bridge')
+require('./lib/lights')
 
 process.on('uncaughtException', function (err) {
   if (process.env.NODE_ENV === 'production') {
@@ -96,6 +96,6 @@ app.listen(port, function () {
 // and that light has a color schedule, the scheduled color
 // is used
 setTimeout(function () {
-  setInterval(colorWatcher, 60 * 1000)
+  setInterval(lightWatcher, 60 * 1000)
 }, (60 - (new Date()).getSeconds()) * 1000)
-colorWatcher()
+lightWatcher()

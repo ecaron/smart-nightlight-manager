@@ -1,43 +1,41 @@
-'use strict';
+'use strict'
 
-const express = require('express');
-const router = express.Router();
-const db = require('../lib/db');
+const express = require('express')
+const router = express.Router()
+const db = require('../lib/db')
 
 router.get('/', function (req, res) {
-  res.render('settings');
-});
+  res.render('settings')
+})
 
 router.post('/', function (req, res, next) {
   if (!req.body.cmd) {
-    return next(new Error('POST without a cmd'));
+    return next(new Error('POST without a cmd'))
   }
-  switch (req.body.cmd) {
-    case 'add-button':
-      // req.flash('success', 'Default color has been successfully set for the light!');
-      let maxEntry = db.get('lights').sortBy('id').reverse().take(1).value()[0];
-      let newEntry = {
-        id: String(parseInt(maxEntry.id) + 1),
-        settings: {}
-      };
-      if (req.body.type === 'fastled') {
-        newEntry.type = 'fastled';
-        try {
-          let newConfig = JSON.parse(req.body.config);
-          if (!newConfig.name || !newConfig.ip) {
-            return next(new Error('POST without a cmd'));
-          }
-          newEntry.settings = newConfig;
-        } catch (e) {
-          return next(e);
+  if (req.body.cmd === 'add-button') {
+    // req.flash('success', 'Default color has been successfully set for the light!');
+    const maxEntry = db.get('lights').sortBy('id').reverse().take(1).value()[0]
+    const newEntry = {
+      id: String(parseInt(maxEntry.id) + 1),
+      settings: {}
+    }
+    if (req.body.type === 'fastled') {
+      newEntry.type = 'fastled'
+      try {
+        const newConfig = JSON.parse(req.body.config)
+        if (!newConfig.name || !newConfig.ip) {
+          return next(new Error('POST without a cmd'))
         }
-      } else {
-        return next(new Error('Unrecognized light type'));
+        newEntry.settings = newConfig
+      } catch (e) {
+        return next(e)
       }
-      db.get('lights').push(newEntry).write();
-    break;
+    } else {
+      return next(new Error('Unrecognized light type'))
+    }
+    db.get('lights').push(newEntry).write()
   }
-  res.redirect('/');
-});
+  res.redirect('/')
+})
 
-module.exports = router;
+module.exports = router

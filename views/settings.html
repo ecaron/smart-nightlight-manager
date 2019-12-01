@@ -15,6 +15,23 @@
           </div>
         </form>
       </div>
+    {% else %}
+      <div class="col-md-8 col-sm-12 hover-zone">
+        <h2>Attach Known Hue Lights</h2>
+        <form method="post" class="col-xs-10 col-md-9 form-horizontal">
+          {% for light in hueLights %}
+            {% if light.knownLight == false %}
+              {{ light.name }}
+            {% endif %}
+          {% endfor %}
+          <div class="form-group">
+            <div class="col-xs-6 col-sm-3">
+              <input type="hidden" name="cmd" value="attach-hue-lights">
+              <button class="btn btn-default" type="submit">Proceed</button>
+            </div>
+          </div>
+        </form>
+      </div>
     {% endif %}
 
     <div class="col-md-8 col-sm-12 hover-zone">

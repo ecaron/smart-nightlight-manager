@@ -2,10 +2,15 @@ const shortid = require('shortid')
 const express = require('express')
 const router = express.Router()
 const hueSetup = require('../lib/lights/hue/setup')
+const lights = require('../lib/lights')
 
-router.get('/', function (req, res) {
+router.get('/', async function (req, res) {
   const templateData = {}
-  templateData.hueNotConfigured = !req.db.settings.findOne({ type: 'hue' })
+  const hueBridge = req.db.settings.findOne({ type: 'hue' })
+  templateData.hueNotConfigured = !hueBridge
+  if (hueBridge) {
+    templateData.hueLights = await lights.hue.getAll(req.db)
+  }
   res.render('settings', templateData)
 })
 
@@ -35,11 +40,11 @@ router.post('/', function (req, res, next) {
     }
     req.db.lights.insert(newEntry)
   } else if (req.body.cmd === 'configure-hue') {
-    return hueSetup(req).then(() => {
-      res.redirect('/settings?2')
+    return lights.hue.setup(req).then(() => {
+      res.redirect('/settings')
     }).catch(e => {
       req.flash('error', e.toString())
-      res.redirect('/settings?1')
+      res.redirect('/settings')
     })
   }
   res.redirect('/')

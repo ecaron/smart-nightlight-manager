@@ -2,6 +2,21 @@
 
 {% block content %}
   <div class="row">
+    {% if hueNotConfigured %}
+      <div class="col-md-8 col-sm-12 hover-zone">
+        <h2>Configure Hue Bridge</h2>
+        <p>Please first push the button on your Hue Bridge. The click "Proceed".</p>
+        <form method="post" class="col-xs-10 col-md-9 form-horizontal" id ="configure-hue">
+          <div class="form-group">
+            <div class="col-xs-6 col-sm-3">
+              <input type="hidden" name="cmd" value="configure-hue">
+              <button class="btn btn-default" type="submit">Proceed</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    {% endif %}
+
     <div class="col-md-8 col-sm-12 hover-zone">
       <h2>Add Non-Hue Light</h2>
       <p>Currently supports:</p>

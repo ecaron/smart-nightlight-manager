@@ -1,19 +1,14 @@
 require('dotenv').config()
 
-var pkg = require('./package')
-var express = require('express')
-var session = require('express-session')
-var flash = require('connect-flash')
-var nunjucks = require('nunjucks')
-var path = require('path')
+const pkg = require('./package')
+const express = require('express')
+const session = require('express-session')
+const flash = require('connect-flash')
+const nunjucks = require('nunjucks')
+const path = require('path')
 
-var bodyParser = require('body-parser')
-var logger = require('./lib/logger')
-var lightWatcher = require('./lib/light-watcher')
-
-// Required early on see we can just shut it all down if there's
-// no Hue to connect to
-require('./lib/lights')
+const bodyParser = require('body-parser')
+const db = require('./lib/db')
 
 process.on('uncaughtException', function (err) {
   if (process.env.NODE_ENV === 'production') {
@@ -23,8 +18,11 @@ process.on('uncaughtException', function (err) {
   }
 })
 
-var app = express()
-var port = process.env.PORT || 3000
+const logger = require('./lib/logger')
+const lightWatcher = require('./lib/light-watcher')
+
+const app = express()
+const port = process.env.PORT || 3000
 
 app.set('views', path.resolve(__dirname, 'views'))
 nunjucks.configure('views', {
@@ -35,7 +33,7 @@ nunjucks.configure('views', {
 app.set('view engine', 'html')
 
 app.use(session({
-  secret: 'secret',
+  secret: process.env.SESSION_SECRET || 'secret',
   cookie: { maxAge: 60000 },
   resave: true,
   saveUninitialized: true
@@ -47,13 +45,7 @@ app.use('/scripts/moment/', express.static('node_modules/moment'))
 app.use(express.static('public'))
 
 app.use(function (req, res, next) {
-  res.locals.site_name = process.env.SITE_NAME || 'Nightlight System'
-  res.locals.success_messages = req.flash('success')
-  res.locals.error_messages = req.flash('error')
-  next()
-})
-
-app.use(function (req, res, next) {
+  req.db = db
   req.log = function (type, message, meta) {
     if (typeof meta !== 'object') {
       meta = {}
@@ -68,6 +60,10 @@ app.use(function (req, res, next) {
       logger.info(message, meta)
     }
   }
+
+  res.locals.site_name = process.env.SITE_NAME || 'Nightlight System'
+  res.locals.success_messages = req.flash('success')
+  res.locals.error_messages = req.flash('error')
   next()
 })
 
@@ -89,7 +85,7 @@ app.use(function (req, res, next) {
 })
 
 app.listen(port, function () {
-  console.log('Started %s. Listening on port %d', pkg.name, port)
+  console.log(`Started ${pkg.name}. Listening on port ${port}`)
 })
 
 // Once each minute, make sure that if the light is on

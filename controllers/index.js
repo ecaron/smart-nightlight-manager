@@ -1,17 +1,14 @@
-'use strict'
-
-var express = require('express')
-var async = require('async')
-var router = express.Router()
-var bridge = require('../lib/bridge')
-var db = require('../lib/db')
-var hex2rgb = require('../lib/hex2rgb')
-var colorSchedule = require('../lib/color-schedule')
-
+const express = require('express')
+const async = require('async')
+const router = express.Router()
+const lights = require('../lib/lights')
+const hex2rgb = require('../lib/hex2rgb')
+const colorSchedule = require('../lib/color-schedule')
+const bridge = {}
 router.use('/settings', require('./settings'))
 
 router.get('/', function (req, res, next) {
-  bridge.api.lights(function (err, data) {
+  lights.getAll(function (err, data) {
     if (err) {
       return next(err)
     }
@@ -20,11 +17,11 @@ router.get('/', function (req, res, next) {
     templateData.colors = require('../lib/colors')
     templateData.lights = {}
     async.each(data.lights, function (light, callback) {
-      bridge.api.lightStatus(light.id, function (err, result) {
+      light.status(function (err, result) {
         if (err) {
           return next(err)
         }
-        var dbLight = db.get('lights').find({ id: light.id }).value()
+        var dbLight = req.db.lights.find({ id: light.id }).value()
         light.state = (result.state.on) ? 'On' : 'Off'
         light.result = result
         light.logs = bridge.lights[light.id].log
@@ -58,49 +55,48 @@ router.post('/', function (req, res, next) {
   var light
   switch (req.body.cmd) {
     case 'create-color-schedule':
-      return colorSchedule.create(db, req, res)
+      return colorSchedule.create(req, res)
 
     case 'update-color-schedule':
-      return colorSchedule.update(db, req, res)
+      return colorSchedule.update(req, res)
 
     case 'delete-color-schedule':
-      return colorSchedule.delete(db, req, res)
+      return colorSchedule.delete(req, res)
 
     case 'timer-length':
-      light = db.get('lights').find({ id: req.body.light }).value()
+      light = req.db.lights.find({ id: req.body.light }).value()
       req.flash('success', 'Timer has been successfully set for the light!')
       if (!light) {
-        db.get('lights').push(
+        req.db.lights.insert(
           {
             id: req.body.light,
             settings: {
               stayOnMinutes: req.body.minutes
             }
           }
-        ).write()
+        )
         res.redirect('/')
       } else {
         if (!light.settings) {
           light.settings = {}
         }
         light.settings.stayOnMinutes = req.body.minutes
-        db.write()
         res.redirect('/')
       }
       return
 
     case 'default-color':
       req.flash('success', 'Default color has been successfully set for the light!')
-      light = db.get('lights').find({ id: req.body.light }).value()
+      light = req.db.lights.find({ id: req.body.light }).value()
       if (!light) {
-        db.get('lights').push(
+        req.db.lights.insert(
           {
             id: req.body.light,
             settings: {
               color: req.body.color
             }
           }
-        ).write()
+        )
         res.redirect('/')
       } else {
         if (!light.settings) {
@@ -108,7 +104,6 @@ router.post('/', function (req, res, next) {
         }
         light.settings.color = req.body.color
       }
-      db.write()
       res.redirect('/')
       return
 

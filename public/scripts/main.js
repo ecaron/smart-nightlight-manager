@@ -1,6 +1,4 @@
 /* global $:false, moment:false, confirm:false */
-'use strict'
-
 $(document).ready(function () {
   $('ul.navbar-nav li').each(function (i, elem) {
     if ($('a', elem).attr('href') === window.location.pathname) {
@@ -39,6 +37,12 @@ $(document).ready(function () {
   $('.expand-log').on('click', function () {
     $(this).parents('.panel').find('.panel-body').removeClass('hide')
     $(this).remove()
+  })
+
+  $('#configure-hue').on('submit', function (e) {
+    if (!confirm('Did you already click the physical button on your Hue Bridge?')) {
+      e.preventDefault()
+    }
   })
 
   $('#light-experiment').on('submit', function (e) {

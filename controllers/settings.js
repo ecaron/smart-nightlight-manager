@@ -1,11 +1,12 @@
-'use strict'
-
+const shortid = require('shortid')
 const express = require('express')
 const router = express.Router()
-const db = require('../lib/db')
+const hueSetup = require('../lib/lights/hue/setup')
 
 router.get('/', function (req, res) {
-  res.render('settings')
+  const templateData = {}
+  templateData.hueNotConfigured = !req.db.settings.findOne({ type: 'hue' })
+  res.render('settings', templateData)
 })
 
 router.post('/', function (req, res, next) {
@@ -13,9 +14,8 @@ router.post('/', function (req, res, next) {
     return next(new Error('POST without a cmd'))
   }
   if (req.body.cmd === 'add-button') {
-    const maxEntry = db.get('lights').sortBy('id').reverse().take(1).value()[0]
     const newEntry = {
-      id: String(parseInt(maxEntry.id) + 1),
+      id: shortid.generate(),
       settings: {}
     }
     if (req.body.type === 'fastled') {
@@ -33,7 +33,14 @@ router.post('/', function (req, res, next) {
     } else {
       return next(new Error('Unrecognized light type'))
     }
-    db.get('lights').push(newEntry).write()
+    req.db.lights.insert(newEntry)
+  } else if (req.body.cmd === 'configure-hue') {
+    return hueSetup(req).then(() => {
+      res.redirect('/settings?2')
+    }).catch(e => {
+      req.flash('error', e.toString())
+      res.redirect('/settings?1')
+    })
   }
   res.redirect('/')
 })

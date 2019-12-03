@@ -14,17 +14,15 @@ router.get('/', async function (req, res) {
   res.render('settings', templateData)
 })
 
-router.post('/', function (req, res, next) {
+router.post('/', async function (req, res, next) {
   if (!req.body.cmd) {
     return next(new Error('POST without a cmd'))
   }
-  if (req.body.cmd === 'add-button') {
+  if (req.body.cmd === 'add-nonhue-light') {
     const newEntry = {
-      id: shortid.generate(),
       settings: {}
     }
     if (req.body.type === 'fastled') {
-      newEntry.type = 'fastled'
       try {
         const newConfig = JSON.parse(req.body.config)
         if (!newConfig.name || !newConfig.ip) {
@@ -38,7 +36,7 @@ router.post('/', function (req, res, next) {
     } else {
       return next(new Error('Unrecognized light type'))
     }
-    req.db.lights.insert(newEntry)
+    lights.add(req.db, req.body.type, newEntry)
   } else if (req.body.cmd === 'configure-hue') {
     return lights.hue.setup(req).then(() => {
       res.redirect('/settings')
@@ -46,6 +44,12 @@ router.post('/', function (req, res, next) {
       req.flash('error', e.toString())
       res.redirect('/settings')
     })
+  } else if (req.body.cmd === 'attach-hue-lights') {
+    const addingLights = req.body.lights
+    for (let i = 0; i < addingLights.length; i++ ) {
+      await lights.add(req.db, 'hue', {deviceId: addingLights[i]})
+    }
+    req.flash('success', `Lights successfully associated with this system`)
   }
   res.redirect('/')
 })

@@ -1,5 +1,7 @@
 # Internet-enabled children's nightlight
-Powered by Node.JS, [Philips Hue](http://www2.meethue.com/en-us/).
+Powered by Node.JS and a variety of types of internet-controllable lights, such as:
+* [Philips Hue](https://www2.meethue.com/en-us/)
+* [NeoPixel & ESP8266](https://github.com/jasoncoon/esp8266-fastled-webserver)
 
 ## Why Does This Exist?
 I wanted my kids to have a nightlight in their room that:
@@ -31,8 +33,7 @@ There is also a web application that sets the default color and colors during sp
 For the most part, it is a straight-forward Node.js application. After downloading this repo and extracting it to a directory of your choice, run:
 
 * `npm install`
-* `npm run setup`
-* `sudo npm start`
+* `npm start`
 
 You can now access http://localhost:3000/ and view the complete interface. (On my home network, I put this behind nginx and set the in-house DNS to know it as "nightlight". So now babysitters and family just go to http://nightlight/ to use it.)
 

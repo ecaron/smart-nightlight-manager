@@ -88,7 +88,7 @@
             <div class="row">
               <form method="post" class="col-xs-5 form-horizontal">
                 <div class="form-group">
-                  <label for="minutes-{{ light.id }}" class="col-xs-6 control-label">Timer Minutes</label>
+                  <label for="minutes-{{ light.id }}" class="col-xs-6 col-form-label">Timer Minutes</label>
                   <div class="col-xs-6">
                     <input class="form-control" type="number" id="minutes-{{ light.id }}" name="minutes" placeholder="60" value="{{ light.settings.stayOnMinutes }}" style="max-width:6em">
                   </div>
@@ -104,7 +104,7 @@
 
               <form method="post" class="col-xs-offset-1 col-xs-5 form-horizontal">
                 <div class="form-group">
-                  <label for="default-color-{{ light.id }}" class="col-xs-6 control-label">Default Color</label>
+                  <label for="default-color-{{ light.id }}" class="col-xs-6 col-form-label">Default Color</label>
                   <div class="col-xs-6">
                     <input name="color" id="default-color-{{ light.id }}" class="jscolor form-control" value="{{ light.settings.color }}" style="max-width:6em">
                   </div>

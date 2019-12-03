@@ -7,44 +7,44 @@ const colorSchedule = require('../lib/color-schedule')
 const bridge = {}
 router.use('/settings', require('./settings'))
 
-router.get('/', function (req, res, next) {
-  lights.getAll(function (err, data) {
-    if (err) {
-      return next(err)
+router.get('/', async function (req, res, next) {
+  let allLights
+  try {
+    allLights = await lights.getAll(req.db)
+    console.log(`Found ${allLights.length}`)
+  } catch (err) {
+    return next(err)
+  }
+
+  var templateData = {}
+  templateData.colors = require('../lib/colors')
+  templateData.lights = {}
+
+  async.each(allLights, function (light, callback) {
+    if (light.type === 'hue') {
+      const result = light.bridgeData
+      light.state = (result.state.on) ? 'On' : 'Off'
+      light.result = result
     }
+    // light.logs = bridge.lights[light.id].log
+    // if (bridge.lights[light.id].timer) {
+    //   light.timerTime = bridge.lights[light.id].timerTime.toString()
+    // }
 
-    var templateData = {}
-    templateData.colors = require('../lib/colors')
-    templateData.lights = {}
-    async.each(data.lights, function (light, callback) {
-      light.status(function (err, result) {
-        if (err) {
-          return next(err)
-        }
-        var dbLight = req.db.lights.find({ id: light.id }).value()
-        light.state = (result.state.on) ? 'On' : 'Off'
-        light.result = result
-        light.logs = bridge.lights[light.id].log
-        if (bridge.lights[light.id].timer) {
-          light.timerTime = bridge.lights[light.id].timerTime.toString()
-        }
+    // light.settings = {}
+    // if (typeof dbLight === 'object' && dbLight.settings) {
+    //   light.settings = dbLight.settings
+    // }
 
-        light.settings = {}
-        if (typeof dbLight === 'object' && dbLight.settings) {
-          light.settings = dbLight.settings
-        }
+    // light.colorSchedule = {}
+    // if (typeof dbLight === 'object' && dbLight.colorSchedule) {
+    //   light.colorSchedule = dbLight.colorSchedule
+    // }
 
-        light.colorSchedule = {}
-        if (typeof dbLight === 'object' && dbLight.colorSchedule) {
-          light.colorSchedule = dbLight.colorSchedule
-        }
-
-        templateData.lights[light.id] = light
-        return callback()
-      })
-    }, function () {
-      res.render('index', templateData)
-    })
+    templateData.lights[light.id] = light
+    return callback()
+  }, function () {
+    res.render('index', templateData)
   })
 })
 

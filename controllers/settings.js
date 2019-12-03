@@ -1,7 +1,5 @@
-const shortid = require('shortid')
 const express = require('express')
 const router = express.Router()
-const hueSetup = require('../lib/lights/hue/setup')
 const lights = require('../lib/lights')
 
 router.get('/', async function (req, res) {
@@ -46,10 +44,10 @@ router.post('/', async function (req, res, next) {
     })
   } else if (req.body.cmd === 'attach-hue-lights') {
     const addingLights = req.body.lights
-    for (let i = 0; i < addingLights.length; i++ ) {
-      await lights.add(req.db, 'hue', {deviceId: addingLights[i]})
+    for (let i = 0; i < addingLights.length; i++) {
+      await lights.add(req.db, 'hue', { deviceId: addingLights[i] })
     }
-    req.flash('success', `Lights successfully associated with this system`)
+    req.flash('success', 'Lights successfully associated with this system')
   }
   res.redirect('/')
 })

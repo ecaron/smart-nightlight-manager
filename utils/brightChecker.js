@@ -9,7 +9,7 @@ if (!process.env.LIGHT) {
   process.exit(1)
 }
 
-db.on('ready', function(){
+db.event.on('loaded', function () {
   const bridgeInfo = db.settings.findOne({ type: 'hue' })
 
   if (!bridgeInfo) {
@@ -20,14 +20,19 @@ db.on('ready', function(){
   const LightState = hue.lightStates.LightState
   hue.api.createLocal(bridgeInfo.ip).connect(bridgeInfo.username).then(api => {
     let brightness = 0
-    console.log('About to cycle through brightness, from 0% to 100%')
+    console.log('About to cycle through brightness, from 0% to 100%.')
     setInterval(async function () {
       const state = new LightState().on().brightness(brightness)
       console.log('Brightness at ' + brightness)
       if (brightness === 100) process.exit()
       brightness += 10
       state.rgb(hex2rgb('FFFFFF'))
-      await api.lights.setLightState(process.env.LIGHT, state)
+      try {
+        await api.lights.setLightState(process.env.LIGHT, state)
+      } catch (e) {
+        console.warn(e)
+        process.exit(1)
+      }
     }, 5000)
   }).catch(err => {
     console.warn(err)

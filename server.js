@@ -84,14 +84,16 @@ app.use(function (req, res, next) {
   res.status(404).send('Sorry cant find that!')
 })
 
-app.listen(port, function () {
-  console.log(`Started ${pkg.name}. Listening on port ${port}`)
-})
+db.event.on('loaded', function () {
+  app.listen(port, function () {
+    console.log(`Started ${pkg.name}. Listening on port ${port}`)
+  })
 
-// Once each minute, make sure that if the light is on
-// and that light has a color schedule, the scheduled color
-// is used
-setTimeout(function () {
-  setInterval(lightWatcher, 60 * 1000)
-}, (60 - (new Date()).getSeconds()) * 1000)
-lightWatcher()
+  // Once each minute, make sure that if the light is on
+  // and that light has a color schedule, the scheduled color
+  // is used
+  setTimeout(function () {
+    setInterval(lightWatcher, 60 * 1000)
+  }, (60 - (new Date()).getSeconds()) * 1000)
+  lightWatcher()
+})

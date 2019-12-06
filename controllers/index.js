@@ -2,9 +2,7 @@ const express = require('express')
 const async = require('async')
 const router = express.Router()
 const lights = require('../lib/lights')
-const hex2rgb = require('../lib/hex2rgb')
 const colorSchedule = require('../lib/color-schedule')
-const bridge = {}
 router.use('/settings', require('./settings'))
 
 router.get('/', async function (req, res, next) {
@@ -26,20 +24,6 @@ router.get('/', async function (req, res, next) {
       light.state = (result.state.on) ? 'On' : 'Off'
       light.result = result
     }
-    // light.logs = bridge.lights[light.id].log
-    // if (bridge.lights[light.id].timer) {
-    //   light.timerTime = bridge.lights[light.id].timerTime.toString()
-    // }
-
-    // light.settings = {}
-    // if (typeof dbLight === 'object' && dbLight.settings) {
-    //   light.settings = dbLight.settings
-    // }
-
-    // light.colorSchedule = {}
-    // if (typeof dbLight === 'object' && dbLight.colorSchedule) {
-    //   light.colorSchedule = dbLight.colorSchedule
-    // }
 
     templateData.lights[light.id] = light
     return callback()
@@ -48,11 +32,11 @@ router.get('/', async function (req, res, next) {
   })
 })
 
-router.post('/', function (req, res, next) {
+router.post('/', async function (req, res, next) {
   if (!req.body.cmd) {
     return next(new Error('POST without a cmd'))
   }
-  var light
+  let light
   switch (req.body.cmd) {
     case 'create-color-schedule':
       return colorSchedule.create(req, res)
@@ -64,97 +48,67 @@ router.post('/', function (req, res, next) {
       return colorSchedule.delete(req, res)
 
     case 'timer-length':
-      light = req.db.lights.find({ id: req.body.light }).value()
+      light = req.db.lights.findOne({ id: req.body.light })
       req.flash('success', 'Timer has been successfully set for the light!')
-      if (!light) {
-        req.db.lights.insert(
-          {
-            id: req.body.light,
-            settings: {
-              stayOnMinutes: req.body.minutes
-            }
-          }
-        )
-        res.redirect('/')
-      } else {
-        if (!light.settings) {
-          light.settings = {}
-        }
-        light.settings.stayOnMinutes = req.body.minutes
-        res.redirect('/')
-      }
+      light.settings.stayOnMinutes = req.body.minutes
+      res.redirect('/')
       return
 
     case 'default-color':
       req.flash('success', 'Default color has been successfully set for the light!')
-      light = req.db.lights.find({ id: req.body.light }).value()
-      if (!light) {
-        req.db.lights.insert(
-          {
-            id: req.body.light,
-            settings: {
-              color: req.body.color
-            }
-          }
-        )
-        res.redirect('/')
-      } else {
-        if (!light.settings) {
-          light.settings = {}
-        }
-        light.settings.color = req.body.color
-      }
+      light = req.db.lights.findOne({ id: req.body.light })
+      light.settings.color = req.body.color
       res.redirect('/')
       return
 
     case 'turn-on-keep-on':
       req.flash('success', 'Light has been turned on and will stay on!')
-      req.log('info', 'Turning on light for ' + req.body.light)
-      bridge.lights[req.body.light].turnOn()
+      await light.turnOn(req.db, req.body.light)
       break
 
     case 'turn-on-with-timer':
       req.flash('success', 'Light has been turned on and timer has been started!')
-      bridge.lights[req.body.light].turnOnWithTimer()
+      await light.turnOn(req.db, req.body.light, {
+        timer: true
+      })
       break
 
     case 'turn-off':
       req.flash('success', 'Light has been turned off!')
-      bridge.lights[req.body.light].turnOff()
+      await light.turnOff(req.db, req.body.light)
       break
 
     case 'toggle-keep-on':
     case 'toggle-with-timer':
-      bridge.api.lightStatus(req.body.light, function (err, result) {
-        if (err) {
-          return next(err)
-        }
-        if (result.state.on) {
-          bridge.lights[req.body.light].turnOff()
-          res.send('Turned off')
-        } else if (req.body.cmd === 'toggle-keep-on') {
-          bridge.lights[req.body.light].turnOn()
-          res.send('Turned on, keeping on')
-        } else {
-          bridge.lights[req.body.light].turnOnWithTimer()
-          res.send('Turned on, timer started')
-        }
-      })
+      light = await lights.get(req.db, req.body.light)
+      if (light.status.on) {
+        await light.turnOff(req.db, req.body.light)
+        res.send('Turned off')
+      } else if (req.body.cmd === 'toggle-keep-on') {
+        await light.turnOn(req.db, req.body.light)
+        res.send('Turned on, keeping on')
+      } else {
+        await light.turnOn(req.db, req.body.light, {
+          timer: true
+        })
+        res.send('Turned on, timer started')
+      }
       return
 
     case 'experiment':
       if (req.body.light) {
-        var state = bridge.lightState.create()
-        if (req.body.intend_state === 'on') {
-          state.on()
-          state.brightness(req.body.brightness)
-          state.rgb(hex2rgb(req.body.color))
-        } else {
-          state.off()
+        try {
+          if (req.body.intend_state === 'on') {
+            await light.turnOn(req.db, req.body.light, {
+              color: req.body.color,
+              brightness: req.body.brightness
+            })
+          } else {
+            await light.turnOff(req.db, req.body.light)
+          }
+        } catch (e) {
+          console.log(e)
         }
-        bridge.api.setLightState(req.body.light, state, function (err, lights) {
-          if (err) console.log(err)
-        })
       }
       res.send('Success')
       return

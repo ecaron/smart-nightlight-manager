@@ -51,7 +51,7 @@ $(document).ready(function () {
     }
   })
 
-  $('#light-experiment').on('submit', function (e) {
+  $('.light-experiment').on('submit', function (e) {
     e.preventDefault()
     var data = {
       cmd: 'experiment'

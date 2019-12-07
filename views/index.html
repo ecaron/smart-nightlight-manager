@@ -124,7 +124,7 @@
                   <div class="col-xs-6">
                     <select name="brightness" class="form-control" id="default-brightness-{{ lightId }}" >
                       <option value="0" {% if light.settings.brightness == "0" %}selected="selected"{% endif %}>0% (Dimmest)</option>
-                      {% for i in range(5, 95, 5) -%}
+                      {% for i in range(5, 95, 5) %}
                         <option value="{{ i }}" {% if light.settings.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
                       {%- endfor %}
                       <option value="100" {% if light.settings.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
@@ -166,7 +166,7 @@
                       <div class="col-xs-6 col-sm-4">
                         <select name="brightness" class="form-control">
                           <option value="0" {% if schedule.brightness == "0" %}selected="selected"{% endif %}>0% (Dimmest)</option>
-                          {% for i in range(5, 95, 5) -%}
+                          {% for i in range(5, 95, 5) %}
                             <option value="{{ i }}" {% if schedule.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
                           {%- endfor %}
                           <option value="100" {% if schedule.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
@@ -212,7 +212,7 @@
                   <div class="col-xs-6 col-sm-4">
                     <select name="brightness" class="form-control">
                       <option value="0">0% (Dimmest)</option>
-                      {% for i in range(5, 95, 5) -%}
+                      {% for i in range(5, 95, 5) %}
                         <option value="{{ i }}">{{ i }}%</option>
                       {%- endfor %}
                       <option value="100">100% (Brightest)</option>
@@ -239,34 +239,92 @@
 
   <div class="row">
     <div class="col-md-8 col-sm-12 hover-zone">
-      <h2>Experiment</h2>
+      <h2>Experiment With Hue</h2>
       <div class="row">
-        <form method="post" action="#" class="col-xs-10 col-md-9 form-horizontal" id="light-experiment">
+        <form method="post" action="#" class="col-xs-10 col-md-9 form-horizontal light-experiment">
           <div class="form-group">
             <div class="col-xs-6 col-sm-3">
               <select name="light" class="form-control">
                 <option value="">--Select One</option>
                 {% for lightId, light in lights %}
-                  <option value="{{lightId}}">{{ light.name }}</option>
+                  {% if light.type == "hue" %}
+                    <option value="{{lightId}}">{{ light.name }}</option>
+                  {% endif %}
                 {% endfor %}
               </select>
             </div>
             <div class="col-xs-6 col-sm-3">
-              <input name="color" class="jscolor form-control" value="">
+              <input name="settings[color]" class="jscolor form-control" value="">
             </div>
             <div class="col-xs-6 col-sm-3">
-              <select name="brightness" class="form-control">
+              <select name="settings[brightness]" class="form-control">
                 <option value="0">0% (Dimmest)</option>
-                {% for i in range(5, 95, 5) -%}
+                {% for i in range(5, 95, 5) %}
                   <option value="{{ i }}">{{ i }}%</option>
                 {%- endfor %}
                 <option value="100">100% (Brightest)</option>
               </select>
             </div>
             <div class="col-xs-6 col-sm-3">
-              <input type="hidden" name="intend_state" id="intend_state">
-              <button class="btn btn-default" type="submit" onclick="$('#intend_state').val('on')" value="on">Turn On</button>
-              <button class="btn btn-default" type="submit" onclick="$('#intend_state').val('off')" value="off">Turn Off</button>
+              <input type="hidden" name="type" value="hue">
+              <input type="hidden" name="intend_state" id="intend_state_hue">
+              <button class="btn btn-default" type="submit" onclick="$('#intend_state_hue').val('on')" value="on">Turn On</button>
+              <button class="btn btn-default" type="submit" onclick="$('#intend_state_hue').val('off')" value="off">Turn Off</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-md-8 col-sm-12 hover-zone">
+      <h2>Experiment With FastLED</h2>
+      <div class="row">
+        <form method="post" action="#" class="col-xs-10 col-md-9 form-horizontal light-experiment">
+          <div class="form-group">
+            <div class="col-xs-6 col-sm-3">
+              <select name="light" class="form-control">
+                <option value="">--Select One</option>
+                {% for lightId, light in lights %}
+                  {% if light.type == "fastled" %}
+                    <option value="{{lightId}}">{{ light.name }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+              <select name="settings[pattern]" class="form-control">
+                <option value="">--Pattern</option>
+                {% for pattern in patterns %}
+                  <option value="{{ pattern }}">{{ pattern }}</option>
+                {%- endfor %}
+              </select>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+              <select name="settings[palette]" class="form-control">
+                <option value="">--Palette</option>
+                {% for palette in palettes %}
+                  <option value="{{ palette }}">{{ palette }}</option>
+                {%- endfor %}
+              </select>
+            </div>
+
+            <div class="col-xs-6 col-sm-3">
+              <input name="settings[color]" class="jscolor form-control" value="">
+            </div>
+            <div class="col-xs-6 col-sm-3">
+              <select name="settings[brightness]" class="form-control">
+                <option value="0">0% (Dimmest)</option>
+                {% for i in range(5, 95, 5) %}
+                  <option value="{{ i }}">{{ i }}%</option>
+                {%- endfor %}
+                <option value="100">100% (Brightest)</option>
+              </select>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+              <input type="hidden" name="type" value="fastled">
+              <input type="hidden" name="intend_state" id="intend_state_fastled">
+              <button class="btn btn-default" type="submit" onclick="$('#intend_state_fastled').val('on')" value="on">Turn On</button>
+              <button class="btn btn-default" type="submit" onclick="$('#intend_state_fastled').val('off')" value="off">Turn Off</button>
             </div>
           </div>
         </form>

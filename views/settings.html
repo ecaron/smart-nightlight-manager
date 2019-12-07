@@ -25,9 +25,7 @@
               {% set displayedLight = true %}
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" name="lights[]" value="{{ light.deviceId }}"> {{ light.name }}
-                  <input type="checkbox" name="lights[]" value="{{ light.deviceId }}a"> {{ light.name }}
-                  <input type="checkbox" name="lights[]" value="{{ light.deviceId }}b"> {{ light.name }}
+                  <input type="checkbox" name="lights[]" value="{{ light.device.id }}"> {{ light.device.name }}
                 </label>
               </div>
             {% endif %}

@@ -9,7 +9,6 @@ router.get('/', async function (req, res, next) {
   let allLights
   try {
     allLights = await lights.getAll(req.db)
-    console.log(`Found ${allLights.length}`)
   } catch (err) {
     return next(err)
   }
@@ -48,47 +47,49 @@ router.post('/', async function (req, res, next) {
       return colorSchedule.delete(req, res)
 
     case 'timer-length':
-      light = req.db.lights.findOne({ id: req.body.light })
+      light = req.db.lights.get(req.body.light)
       req.flash('success', 'Timer has been successfully set for the light!')
       light.settings.stayOnMinutes = req.body.minutes
+      req.db.lights.update(light)
       res.redirect('/')
       return
 
     case 'default-color':
       req.flash('success', 'Default color has been successfully set for the light!')
-      light = req.db.lights.findOne({ id: req.body.light })
+      light = req.db.lights.get(req.body.light)
       light.settings.color = req.body.color
+      req.db.lights.update(light)
       res.redirect('/')
       return
 
     case 'turn-on-keep-on':
       req.flash('success', 'Light has been turned on and will stay on!')
-      await light.turnOn(req.db, req.body.light)
+      await lights.turnOn(req.db, req.body.light)
       break
 
     case 'turn-on-with-timer':
       req.flash('success', 'Light has been turned on and timer has been started!')
-      await light.turnOn(req.db, req.body.light, {
+      await lights.turnOn(req.db, req.body.light, {
         timer: true
       })
       break
 
     case 'turn-off':
       req.flash('success', 'Light has been turned off!')
-      await light.turnOff(req.db, req.body.light)
+      await lights.turnOff(req.db, req.body.light)
       break
 
     case 'toggle-keep-on':
     case 'toggle-with-timer':
       light = await lights.get(req.db, req.body.light)
       if (light.status.on) {
-        await light.turnOff(req.db, req.body.light)
+        await lights.turnOff(req.db, req.body.light)
         res.send('Turned off')
       } else if (req.body.cmd === 'toggle-keep-on') {
-        await light.turnOn(req.db, req.body.light)
+        await lights.turnOn(req.db, req.body.light)
         res.send('Turned on, keeping on')
       } else {
-        await light.turnOn(req.db, req.body.light, {
+        await lights.turnOn(req.db, req.body.light, {
           timer: true
         })
         res.send('Turned on, timer started')
@@ -99,12 +100,12 @@ router.post('/', async function (req, res, next) {
       if (req.body.light) {
         try {
           if (req.body.intend_state === 'on') {
-            await light.turnOn(req.db, req.body.light, {
+            await lights.turnOn(req.db, req.body.light, {
               color: req.body.color,
               brightness: req.body.brightness
             })
           } else {
-            await light.turnOff(req.db, req.body.light)
+            await lights.turnOff(req.db, req.body.light)
           }
         } catch (e) {
           console.log(e)

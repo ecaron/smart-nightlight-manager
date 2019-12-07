@@ -19,7 +19,6 @@
     "morgan": "1.9.1",
     "node-hue-api": "3.4.3",
     "nunjucks": "3.2.0",
-    "shortid": "^2.2.15",
     "timepicker": "1.12.0",
     "winston": "3.2.1"
   },

@@ -21,7 +21,7 @@
               {% if light.result.state.on %}
                 <form method="post" class="form-inline">
                   <div>
-                    <input type="hidden" name="light" value="{{ light.id }}">
+                    <input type="hidden" name="light" value="{{ lightId }}">
                     <input type="hidden" name="cmd" value="turn-off">
                     <button class="btn btn-primary" type="submit">Turn Off</button>
                   </div>
@@ -29,7 +29,7 @@
               {% else %}
                 <form method="post" class="form-inline pull-left">
                   <button type="submit" class="btn btn-primary">Turn On</button>
-                  <input type="hidden" name="light" value="{{ light.id }}">
+                  <input type="hidden" name="light" value="{{ lightId }}">
                   <input type="hidden" name="cmd" value="turn-on-keep-on">
                 </form>
                 <button type="button" class="btn btn-primary dropdown-toggle pull-left" style="margin-left:-3px" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -39,7 +39,7 @@
                 <ul class="dropdown-menu">
                   <li>
                     <form method="post" class="form-inline">
-                      <input type="hidden" name="light" value="{{ light.id }}">
+                      <input type="hidden" name="light" value="{{ lightId }}">
                       <input type="hidden" name="cmd" value="turn-on-with-timer">
                       <button class="btn btn-link" type="submit">With Timer</button>
                     </form>
@@ -88,14 +88,14 @@
             <div class="row">
               <form method="post" class="col-xs-5 form-horizontal">
                 <div class="form-group">
-                  <label for="minutes-{{ light.id }}" class="col-xs-6 col-form-label">Timer Minutes</label>
+                  <label for="minutes-{{ lightId }}" class="col-xs-6 col-form-label">Timer Minutes</label>
                   <div class="col-xs-6">
-                    <input class="form-control" type="number" id="minutes-{{ light.id }}" name="minutes" placeholder="60" value="{{ light.settings.stayOnMinutes }}" style="max-width:6em">
+                    <input class="form-control" type="number" id="minutes-{{ lightId }}" name="minutes" placeholder="60" value="{{ light.settings.stayOnMinutes }}" style="max-width:6em">
                   </div>
                 </div>
                 <div class="form-group">
                   <div class="col-xs-offset-6 col-xs-6">
-                    <input type="hidden" name="light" value="{{ light.id }}">
+                    <input type="hidden" name="light" value="{{ lightId }}">
                     <input type="hidden" name="cmd" value="timer-length">
                     <button class="btn btn-default" type="submit">Save</button>
                   </div>
@@ -104,14 +104,14 @@
 
               <form method="post" class="col-xs-offset-1 col-xs-5 form-horizontal">
                 <div class="form-group">
-                  <label for="default-color-{{ light.id }}" class="col-xs-6 col-form-label">Default Color</label>
+                  <label for="default-color-{{ lightId }}" class="col-xs-6 col-form-label">Default Color</label>
                   <div class="col-xs-6">
-                    <input name="color" id="default-color-{{ light.id }}" class="jscolor form-control" value="{{ light.settings.color }}" style="max-width:6em">
+                    <input name="color" id="default-color-{{ lightId }}" class="jscolor form-control" value="{{ light.settings.color }}" style="max-width:6em">
                   </div>
                 </div>
                 <div class="form-group">
                   <div class="col-xs-offset-6 col-xs-6">
-                    <input type="hidden" name="light" value="{{ light.id }}">
+                    <input type="hidden" name="light" value="{{ lightId }}">
                     <input type="hidden" name="cmd" value="default-color">
                     <button class="btn btn-default" type="submit">Save</button>
                   </div>
@@ -149,7 +149,7 @@
                           {%- endfor %}
                           <option value="100" {% if schedule.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
                         </select>
-                        <input type="hidden" name="light" value="{{ light.id }}">
+                        <input type="hidden" name="light" value="{{ lightId }}">
                         <input type="hidden" name="id" value="{{ scheduleId }}">
                         <input type="hidden" name="cmd" value="update-color-schedule">
                         <button class="btn btn-default" type="submit">Update</button>
@@ -159,7 +159,7 @@
                 </div>
                 <div class="col-xs-2 col-md-3">
                   <form method="post" class="form-horizontal confirm-submit">
-                    <input type="hidden" name="light" value="{{ light.id }}">
+                    <input type="hidden" name="light" value="{{ lightId }}">
                     <input type="hidden" name="id" value="{{ scheduleId }}">
                     <input type="hidden" name="cmd" value="delete-color-schedule">
                     <button class="btn btn-link" type="submit">
@@ -195,7 +195,7 @@
                       {%- endfor %}
                       <option value="100">100% (Brightest)</option>
                     </select>
-                    <input type="hidden" name="light" value="{{ light.id }}">
+                    <input type="hidden" name="light" value="{{ lightId }}">
                     <input type="hidden" name="cmd" value="create-color-schedule">
                     <button class="btn btn-default" type="submit">Create</button>
                   </div>

@@ -18,7 +18,7 @@
         <div class="row">
           <div class="col-xs-4 col-sm-3">
             <div class="btn-group">
-              {% if light.result.state.on %}
+              {% if light.result.on %}
                 <form method="post" class="form-inline">
                   <div>
                     <input type="hidden" name="light" value="{{ lightId }}">
@@ -41,7 +41,7 @@
                     <form method="post" class="form-inline">
                       <input type="hidden" name="light" value="{{ lightId }}">
                       <input type="hidden" name="cmd" value="turn-on-with-timer">
-                      <button class="btn btn-link" type="submit">With Timer</button>
+                      <button class="btn btn-link" type="submit" style="color:white">With Timer</button>
                     </form>
                   </li>
                 </ul>
@@ -55,7 +55,7 @@
               {% endif %}
             </h1>
 
-            <p>The light is <strong>{% if light.result.state.on %}ON{% else %}OFF{% endif %}</strong></p>
+            <p>The light is <strong>{% if light.result.on %}ON{% else %}OFF{% endif %}</strong></p>
 
           </div>
         </div>
@@ -86,7 +86,7 @@
           <div class="panel-heading">Settings</div>
           <div class="panel-body">
             <div class="row">
-              <form method="post" class="col-xs-5 form-horizontal">
+              <form method="post" class="col-xs-4 form-horizontal">
                 <div class="form-group">
                   <label for="minutes-{{ lightId }}" class="col-xs-6 col-form-label">Timer Minutes</label>
                   <div class="col-xs-6">
@@ -102,7 +102,7 @@
                 </div>
               </form>
 
-              <form method="post" class="col-xs-offset-1 col-xs-5 form-horizontal">
+              <form method="post" class="col-xs-4 form-horizontal">
                 <div class="form-group">
                   <label for="default-color-{{ lightId }}" class="col-xs-6 col-form-label">Default Color</label>
                   <div class="col-xs-6">
@@ -113,6 +113,28 @@
                   <div class="col-xs-offset-6 col-xs-6">
                     <input type="hidden" name="light" value="{{ lightId }}">
                     <input type="hidden" name="cmd" value="default-color">
+                    <button class="btn btn-default" type="submit">Save</button>
+                  </div>
+                </div>
+              </form>
+
+              <form method="post" class="col-xs-4 form-horizontal">
+                <div class="form-group">
+                  <label for="default-brightness-{{ lightId }}" class="col-xs-6 col-form-label">Default Brightness</label>
+                  <div class="col-xs-6">
+                    <select name="brightness" class="form-control" id="default-brightness-{{ lightId }}" >
+                      <option value="0" {% if light.settings.brightness == "0" %}selected="selected"{% endif %}>0% (Dimmest)</option>
+                      {% for i in range(5, 95, 5) -%}
+                        <option value="{{ i }}" {% if light.settings.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
+                      {%- endfor %}
+                      <option value="100" {% if light.settings.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-offset-6 col-xs-6">
+                    <input type="hidden" name="light" value="{{ lightId }}">
+                    <input type="hidden" name="cmd" value="default-brightness">
                     <button class="btn btn-default" type="submit">Save</button>
                   </div>
                 </div>

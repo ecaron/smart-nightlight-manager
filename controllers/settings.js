@@ -7,7 +7,7 @@ router.get('/', async function (req, res) {
   const hueBridge = req.db.settings.findOne({ type: 'hue' })
   templateData.hueNotConfigured = !hueBridge
   if (hueBridge) {
-    templateData.hueLights = await lights.hue.getAll(req.db, true)
+    templateData.hueLights = await lights.hue.getAll(true)
   }
   res.render('settings', templateData)
 })
@@ -34,7 +34,7 @@ router.post('/', async function (req, res, next) {
     } else {
       return next(new Error('Unrecognized light type'))
     }
-    lights.add(req.db, req.body.type, newEntry)
+    lights.add(req.body.type, newEntry)
   } else if (req.body.cmd === 'configure-hue') {
     return lights.hue.setup(req).then(() => {
       res.redirect('/settings')
@@ -45,7 +45,7 @@ router.post('/', async function (req, res, next) {
   } else if (req.body.cmd === 'attach-hue-lights') {
     const addingLights = req.body.lights
     for (let i = 0; i < addingLights.length; i++) {
-      await lights.add(req.db, 'hue', { deviceId: addingLights[i] })
+      await lights.add('hue', { deviceId: addingLights[i] })
     }
     req.flash('success', 'Lights successfully associated with this system')
   }

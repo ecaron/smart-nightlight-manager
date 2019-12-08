@@ -6,10 +6,13 @@ Powered by Node.JS and a variety of types of internet-controllable lights, such 
 ## Why Does This Exist?
 I wanted my kids to have a nightlight in their room that:
 
-* Had programmable color
+* Had programmable color & brightness
 * Had an adjustable timer (turns off X minutes after being turned on)
 * Had an interface to show history of button pushes (so I can see when they were awake)
-* Schedule the light to change color on a schedule (so at 7am it turns to blue to indicate "Ok, it's morning time!")
+* Schedule the light to change color on a schedule (so at 7am it turns to blue to indicate "Ok, it's morning time!"). This is great for sleep training!
+
+### Other Great Uses
+* Our [kitchen lightstrips](https://www2.meethue.com/en-us/lightstrips) now turn on at 9pm, and off at 7am, to provide a great evening ambience.
 
 ## Live Demos
 | Demo of button turning light on  |
@@ -35,7 +38,7 @@ For the most part, it is a straight-forward Node.js application. After downloadi
 * `npm install`
 * `npm start`
 
-You can now access http://localhost:3000/ and view the complete interface. (On my home network, I put this behind nginx and set the in-house DNS to know it as "nightlight". So now babysitters and family just go to http://nightlight/ to use it.)
+You can now access http://localhost:3000/ and view the complete interface. (On my home network, I put this on a Rapsberry Pi and set the in-house DNS to know it as "nightlight". So now babysitters and family just go to http://nightlight/ to use it.)
 
 ### Environment Configurables
 There are some variables that much be defined in the environment before starting the application.
@@ -72,3 +75,4 @@ You'll find plenty of other great tutorials on the web about running a Node.js a
 * [jQuery Timepicker](https://github.com/jonthornton/jquery-timepicker) - Fast way to add time handling to the interface
 * [node-dash-button](https://github.com/hortinstein/node-dash-button) - Fantastic module to find Node button on the network, and bind it to events. No longer used, but inspiring.
 * [node-hue-api](https://github.com/peter-murray/node-hue-api) - Wonderful module to find and control Philips Hue bridges and bulbs
+* [FastLED + ESP8266 Web Server](https://github.com/jasoncoon/esp8266-fastled-webserver) - Saved me a ton of time programming a non-Hue LED circuit

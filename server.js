@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 const pkg = require('./package')
 const express = require('express')
 const session = require('express-session')

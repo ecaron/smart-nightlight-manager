@@ -4,8 +4,8 @@ const hue = require('node-hue-api').v3
 const hex2rgb = require('../lib/hex2rgb')
 const db = require('../lib/db')
 
-if (!process.env.LIGHT) {
-  console.warn('LIGHT must be set as an environment variable so we know what to target')
+if (process.argv.length !== 3) {
+  console.warn('This script must be run as `node brightChecker.js ID`, where ID is the number Hue has for light')
   process.exit(1)
 }
 
@@ -28,7 +28,7 @@ db.event.on('loaded', function () {
       brightness += 10
       state.rgb(hex2rgb('FFFFFF'))
       try {
-        await api.lights.setLightState(process.env.LIGHT, state)
+        await api.lights.setLightState(process.argv[2], state)
       } catch (e) {
         console.warn(e)
         process.exit(1)

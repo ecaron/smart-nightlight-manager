@@ -7,7 +7,8 @@ router.get('/', async function (req, res) {
   const hueBridge = req.db.settings.findOne({ type: 'hue' })
   templateData.hueNotConfigured = !hueBridge
   if (hueBridge) {
-    templateData.hueLights = await lights.hue.getAll(true)
+    const hueLights = await lights.hue.getUnknown()
+    templateData.hueLights = hueLights
   }
   res.render('settings', templateData)
 })

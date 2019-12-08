@@ -60,5 +60,5 @@ You'll find plenty of other great tutorials on the web about running a Node.js a
 * [Bootswatch](https://bootswatch.com/) - Great source for Bootstrap themes
 * [Nunjucks](https://mozilla.github.io/nunjucks/) - Really great templating language for JavaScript
 * [jQuery Timepicker](https://github.com/jonthornton/jquery-timepicker) - Fast way to add time handling to the interface
-* [node-dash-button](https://github.com/hortinstein/node-dash-button) - Fantastic module to find Node button on the network, and bind it to events
+* [node-dash-button](https://github.com/hortinstein/node-dash-button) - Fantastic module to find Node button on the network, and bind it to events. No longer used, but inspiring.
 * [node-hue-api](https://github.com/peter-murray/node-hue-api) - Wonderful module to find and control Philips Hue bridges and bulbs

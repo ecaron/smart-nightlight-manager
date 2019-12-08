@@ -20,8 +20,9 @@ router.get('/', async function (req, res, next) {
   templateData.patterns = lights.fastled.PATTERNS
   templateData.lights = {}
 
-  for (let i = 0; i < allLights.length; i++) {
-    light = allLights[i]
+  const lightIDs = Object.keys(allLights.lights)
+  for (let i = 0; i < lightIDs.length; i++) {
+    light = allLights.lights[lightIDs[i]]
     result = await lights.getState(light)
     if (result === false) {
       console.log(`Failed to get state for ${JSON.stringify(light)}`)

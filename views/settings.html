@@ -21,14 +21,12 @@
         <form method="post" class="col-xs-10 col-md-9 form-horizontal">
           {% set displayedLight = false %}
           {% for light in hueLights %}
-            {% if light.knownLight == false %}
-              {% set displayedLight = true %}
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" name="lights[]" value="{{ light.device.id }}"> {{ light.device.name }}
-                </label>
-              </div>
-            {% endif %}
+            {% set displayedLight = true %}
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="lights[]" value="{{ light.id }}"> {{ light.name }}
+              </label>
+            </div>
           {% endfor %}
           {% if displayedLight %}
             <div class="form-group">

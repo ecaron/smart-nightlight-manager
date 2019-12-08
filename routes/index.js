@@ -1,14 +1,12 @@
-'use strict';
-
 exports.index = function (req, res) {
-  var values = {
+  const values = {
     curPage: 'overview'
-  };
-  res.render('index', values);
-};
+  }
+  res.render('index', values)
+}
 exports.settings = function (req, res) {
-  var values = {
+  const values = {
     curPage: 'settings'
-  };
-  res.render('settings', values);
-};
+  }
+  res.render('settings', values)
+}

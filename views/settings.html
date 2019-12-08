@@ -2,8 +2,79 @@
 
 {% block content %}
   <div class="row">
-    <div class="col-md-12">
-      No settings to show. (This used to be filled with Dash Button configs.)
+    {% if hueNotConfigured %}
+      <div class="col-md-8 col-sm-12 hover-zone">
+        <h2>Configure Hue Bridge</h2>
+        <p>Please first push the button on your Hue Bridge. The click "Proceed".</p>
+        <form method="post" class="col-xs-10 col-md-9 form-horizontal" id ="configure-hue">
+          <div class="form-group">
+            <div class="col-xs-6 col-sm-3">
+              <input type="hidden" name="cmd" value="configure-hue">
+              <button class="btn btn-default" type="submit">Proceed</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    {% else %}
+      <div class="col-md-8 col-sm-12 hover-zone">
+        <h2>Known, But Unassociated, Hue Lights</h2>
+        <form method="post" class="col-xs-10 col-md-9 form-horizontal">
+          {% set displayedLight = false %}
+          {% for light in hueLights %}
+            {% set displayedLight = true %}
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="lights[]" value="{{ light.id }}"> {{ light.name }}
+              </label>
+            </div>
+          {% endfor %}
+          {% if displayedLight %}
+            <div class="form-group">
+              <div class="col-xs-6 col-sm-3">
+                <input type="hidden" name="cmd" value="attach-hue-lights">
+                <button class="btn btn-default" type="submit">Proceed</button>
+              </div>
+            </div>
+          {% else %}
+            <p>All known lights are already associated.</p>
+          {% endif %}
+        </form>
+      </div>
+    {% endif %}
+
+    <div class="col-md-8 col-sm-12 hover-zone">
+      <h2>Add Non-Hue Light</h2>
+      <p>Currently supports:</p>
+      <ul>
+        <li><a href="https://github.com/jasoncoon/esp8266-fastled-webserver">FastLED + ESP8266 Web Server</a></li>
+      </ul>
+      <div class="row">
+        <form method="post" class="col-xs-10 col-md-9 form-horizontal">
+          <div class="form-group">
+            <div class="col-xs-6 col-sm-3">
+              <select name="type" class="form-control">
+                <option value="">--Type</option>
+                <option value="fastled">FastLED + ESP8266 Web Server</option>
+              </select>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+              <textarea name="config" class="form-control" placeholder="JSON Config Data"></textarea>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+              <input type="hidden" name="cmd" value="add-nonhue-light">
+              <button class="btn btn-default" type="submit">Save</button>
+            </div>
+          </div>
+          <div class="col-xs-10 col-md-9">
+            <h3>Sample Configs:</h3>
+            <h4>FastLED</h4>
+            <p>
+              <code>{"ip": "192.168.1.100", "name": "Feather Light"}</code>
+            </p>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
+
 {% endblock %}

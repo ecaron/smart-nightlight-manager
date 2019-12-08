@@ -1,33 +1,30 @@
 {
   "name": "hue-website-nightlights",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git://github.com/ecaron/hue-website-nightlights.git"
   },
   "dependencies": {
-    "async": "3.1.0",
+    "axios": "^0.19.0",
     "body-parser": "1.19.0",
     "connect-flash": "0.1.1",
     "express": "4.17.1",
-    "express-session": "1.16.2",
-    "jsonfile": "5.0.0",
-    "lodash": "4.17.14",
-    "lowdb": "1.0.0",
+    "express-session": "1.17.0",
+    "lokijs": "^1.5.8",
     "moment": "2.24.0",
     "morgan": "1.9.1",
-    "node-hue-api": "2.4.6",
+    "node-hue-api": "3.4.3",
     "nunjucks": "3.2.0",
-    "sprintf-js": "1.1.2",
-    "timepicker": "1.11.15",
+    "timepicker": "1.12.0",
     "winston": "3.2.1"
   },
   "devDependencies": {
-    "semistandard": "13.0.1",
+    "standard": "14.3.1",
     "snazzy": "8.0.0"
   },
-  "semistandard": {
+  "standard": {
     "ignore": [
       "public/scripts/bootstrap.min.js",
       "public/scripts/jquery.min.js",
@@ -36,8 +33,7 @@
   },
   "scripts": {
     "start": "node server",
-    "setup": "node setup",
-    "lint": "semistandard | snazzy",
-    "semistandard": "semistandard --fix"
+    "lint": "standard | snazzy",
+    "standard": "standard --fix"
   }
 }

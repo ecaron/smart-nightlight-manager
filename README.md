@@ -1,5 +1,7 @@
 # Internet-enabled children's nightlight
-Powered by Node.JS, [Philips Hue](http://www2.meethue.com/en-us/).
+Powered by Node.JS and a variety of types of internet-controllable lights, such as:
+* [Philips Hue](https://www2.meethue.com/en-us/)
+* [NeoPixel & ESP8266](https://github.com/jasoncoon/esp8266-fastled-webserver)
 
 ## Why Does This Exist?
 I wanted my kids to have a nightlight in their room that:
@@ -31,11 +33,20 @@ There is also a web application that sets the default color and colors during sp
 For the most part, it is a straight-forward Node.js application. After downloading this repo and extracting it to a directory of your choice, run:
 
 * `npm install`
-* `npm run setup`
-* `sudo npm start`
+* `npm start`
 
 You can now access http://localhost:3000/ and view the complete interface. (On my home network, I put this behind nginx and set the in-house DNS to know it as "nightlight". So now babysitters and family just go to http://nightlight/ to use it.)
 
+### Environment Configurables
+There are some variables that much be defined in the environment before starting the application.
+For your convenience, you can also stored these in a `.env` file.
+
+Variable | Purpose | Default
+--- | --- | ---
+SITE_NAME | Shown in page header and logged with Hue bridge | Nightlight System
+NODE_ENV | Determines if application should cache & catch uncaught errors (if set to *production*), or exit | *blank*
+PORT | Port app listens on | 3000
+SESSION_SECRET | How cookie data is encrypted | secret
 
 ### Keeping The App Running
 You'll find plenty of other great tutorials on the web about running a Node.js app as a daemon, but here are a couple:
@@ -59,5 +70,5 @@ You'll find plenty of other great tutorials on the web about running a Node.js a
 * [Bootswatch](https://bootswatch.com/) - Great source for Bootstrap themes
 * [Nunjucks](https://mozilla.github.io/nunjucks/) - Really great templating language for JavaScript
 * [jQuery Timepicker](https://github.com/jonthornton/jquery-timepicker) - Fast way to add time handling to the interface
-* [node-dash-button](https://github.com/hortinstein/node-dash-button) - Fantastic module to find Node button on the network, and bind it to events
+* [node-dash-button](https://github.com/hortinstein/node-dash-button) - Fantastic module to find Node button on the network, and bind it to events. No longer used, but inspiring.
 * [node-hue-api](https://github.com/peter-murray/node-hue-api) - Wonderful module to find and control Philips Hue bridges and bulbs

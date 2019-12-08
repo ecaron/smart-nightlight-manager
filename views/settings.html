@@ -58,12 +58,19 @@
               </select>
             </div>
             <div class="col-xs-6 col-sm-3">
-              <textarea name="config" class="form-control"></textarea>
+              <textarea name="config" class="form-control" placeholder="JSON Config Data"></textarea>
             </div>
             <div class="col-xs-6 col-sm-3">
               <input type="hidden" name="cmd" value="add-nonhue-light">
               <button class="btn btn-default" type="submit">Save</button>
             </div>
+          </div>
+          <div class="col-xs-10 col-md-9">
+            <h3>Sample Configs:</h3>
+            <h4>FastLED</h4>
+            <p>
+              <code>{"ip": "192.168.1.100", "name": "Feather Light"}</code>
+            </p>
           </div>
         </form>
       </div>

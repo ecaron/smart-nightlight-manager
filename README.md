@@ -37,6 +37,16 @@ For the most part, it is a straight-forward Node.js application. After downloadi
 
 You can now access http://localhost:3000/ and view the complete interface. (On my home network, I put this behind nginx and set the in-house DNS to know it as "nightlight". So now babysitters and family just go to http://nightlight/ to use it.)
 
+### Environment Configurables
+There are some variables that much be defined in the environment before starting the application.
+For your convenience, you can also stored these in a `.env` file.
+
+Variable | Purpose | Default
+--- | --- | ---
+SITE_NAME | Shown in page header and logged with Hue bridge | Nightlight System
+NODE_ENV | Determines if application should cache & catch uncaught errors (if set to *production*), or exit | *blank*
+PORT | Port app listens on | 3000
+SESSION_SECRET | How cookie data is encrypted | secret
 
 ### Keeping The App Running
 You'll find plenty of other great tutorials on the web about running a Node.js app as a daemon, but here are a couple:

@@ -265,6 +265,31 @@
     {% endfor %}
   </div>
 
+  {% if offlineLights|length > 0 %}
+    <div class="row">
+      <div class="col-md-8 col-sm-12 hover-zone">
+        <h2>Offline Lights</h2>
+        <div class="row">
+          <form method="post" class="col-xs-10 col-md-9 form-horizontal">
+            {% for offlineLight in offlineLights %}
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="lights[]" value="{{ offlineLight.id }}"> {{ offlineLight.name }}
+                </label>
+              </div>
+            {% endfor %}
+            <div class="form-group">
+              <div class="col-xs-6 col-sm-3">
+                <input type="hidden" name="cmd" value="remove-lights">
+                <button class="btn btn-warning" type="submit">Remove Selected</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
   <div class="row">
     <div class="col-md-8 col-sm-12 hover-zone">
       <h2>Experiment With Hue</h2>

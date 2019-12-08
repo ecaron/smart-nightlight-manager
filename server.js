@@ -43,6 +43,7 @@ app.use('/scripts/moment/', express.static('node_modules/moment'))
 app.use(express.static('public'))
 
 app.use(function (req, res, next) {
+  const render = res.render
   req.db = db
   req.log = function (type, message, meta) {
     if (typeof meta !== 'object') {
@@ -60,8 +61,12 @@ app.use(function (req, res, next) {
   }
 
   res.locals.site_name = process.env.SITE_NAME || 'Nightlight System'
-  res.locals.success_messages = req.flash('success')
-  res.locals.error_messages = req.flash('error')
+  res.render = function (view, locals, cb) {
+    res.locals.success_messages = req.flash('success')
+    res.locals.error_messages = req.flash('error')
+    if (typeof locals === 'object') locals.user = req.user
+    render.call(res, view, locals, cb)
+  }
   next()
 })
 

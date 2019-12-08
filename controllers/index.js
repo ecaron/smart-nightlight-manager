@@ -19,13 +19,16 @@ router.get('/', async function (req, res, next) {
   templateData.palettes = lights.fastled.PALETTES
   templateData.patterns = lights.fastled.PATTERNS
   templateData.lights = {}
+  templateData.offlineLights = []
 
   const lightIDs = Object.keys(allLights.lights)
   for (let i = 0; i < lightIDs.length; i++) {
     light = allLights.lights[lightIDs[i]]
     result = await lights.getState(light)
     if (result === false) {
-      console.log(`Failed to get state for ${JSON.stringify(light)}`)
+      templateData.offlineLights.push(light)
+      req.flash('error', `Unable to communicate with "${light.name}"`)
+      req.log('error', `Failed to get state for ${JSON.stringify(light)}`)
       continue
     }
     light.state = (result.on) ? 'On' : 'Off'
@@ -55,7 +58,7 @@ router.post('/', async function (req, res, next) {
     case 'timer-length':
       stayOnMinutes = parseInt(req.body.minutes)
       if (isNaN(stayOnMinutes)) {
-        req.flash('warn', `Invalid number input supplied - ${req.body.minutes}`)
+        req.flash('error', `Invalid number input supplied - ${req.body.minutes}`)
         res.redirect('/')
       }
       light = req.db.lights.get(req.body.light)
@@ -70,6 +73,15 @@ router.post('/', async function (req, res, next) {
       light = req.db.lights.get(req.body.light)
       light.settings.color = req.body.color
       req.db.lights.update(light)
+      res.redirect('/')
+      return
+
+    case 'remove-lights':
+      for (let i = 0; i < req.body.lights.length; i++) {
+        light = req.db.lights.get(req.body.lights[i])
+        req.db.lights.remove(light)
+      }
+      req.flash('success', 'Offline lights successfully removed!')
       res.redirect('/')
       return
 
@@ -135,7 +147,7 @@ router.post('/', async function (req, res, next) {
             await lights.turnOff(req.body.light)
           }
         } catch (e) {
-          console.log(e)
+          req.log('error', e.toString())
         }
       }
       res.send('Success')

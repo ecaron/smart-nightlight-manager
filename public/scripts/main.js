@@ -28,7 +28,7 @@ $(document).ready(function () {
     $('.time-input').timepicker({
       disableTextInput: true,
       disableTouchKeyboard: true,
-      step: 15,
+      step: 1,
       selectOnBlur: true,
       stopScrollPropagation: true
     })

@@ -156,7 +156,7 @@
                         <input type="text" name="end_time" value="{{ schedule.end }}" class="time-input form-control" placeholder="End Time">
                       </div>
                       <div class="col-xs-6 col-sm-4">
-                        <input name="color" class="jscolor form-control" value="{{ schedule.color }}">
+                        <input name="settings[color]" class="jscolor form-control" value="{{ schedule.color }}">
                         <select name="state" class="form-control">
                           <option value="asis" {% if schedule.state == 'asis' %}selected="selected"{% endif %}>Leave</option>
                           <option value="on" {% if schedule.state == 'on' %}selected="selected"{% endif %}>Turn On</option>
@@ -164,13 +164,27 @@
                         </select>
                       </div>
                       <div class="col-xs-6 col-sm-4">
-                        <select name="brightness" class="form-control">
+                        <select name="settings[brightness]" class="form-control">
                           <option value="0" {% if schedule.brightness == "0" %}selected="selected"{% endif %}>0% (Dimmest)</option>
                           {% for i in range(5, 95, 5) %}
                             <option value="{{ i }}" {% if schedule.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
                           {%- endfor %}
                           <option value="100" {% if schedule.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
                         </select>
+                        {% if light.type == "fastled" %}
+                          <select name="settings[pattern]" class="form-control">
+                            <option value="">--Pattern</option>
+                            {% for pattern in patterns %}
+                              <option value="{{ pattern }}" {% if schedule.pattern == pattern %}selected="selected"{% endif %}>{{ pattern }}</option>
+                            {%- endfor %}
+                          </select>
+                          <select name="settings[palette]" class="form-control">
+                            <option value="">--Palette</option>
+                            {% for palette in palettes %}
+                              <option value="{{ palette }}"{% if schedule.palette == palette %}selected="selected"{% endif %}>{{ palette }}</option>
+                            {%- endfor %}
+                          </select>
+                        {% endif %}
                         <input type="hidden" name="light" value="{{ lightId }}">
                         <input type="hidden" name="id" value="{{ scheduleId }}">
                         <input type="hidden" name="cmd" value="update-color-schedule">
@@ -202,7 +216,7 @@
                     <input type="text" name="end_time" class="time-input form-control" placeholder="End Time">
                   </div>
                   <div class="col-xs-6 col-sm-4">
-                    <input name="color" class="jscolor form-control" value="">
+                    <input name="settings[color]" class="jscolor form-control" value="">
                     <select name="state" class="form-control">
                       <option value="asis">Leave</option>
                       <option value="on">Turn On</option>
@@ -210,13 +224,27 @@
                     </select>
                   </div>
                   <div class="col-xs-6 col-sm-4">
-                    <select name="brightness" class="form-control">
+                    <select name="settings[brightness]" class="form-control">
                       <option value="0">0% (Dimmest)</option>
                       {% for i in range(5, 95, 5) %}
                         <option value="{{ i }}">{{ i }}%</option>
                       {%- endfor %}
                       <option value="100">100% (Brightest)</option>
                     </select>
+                    {% if light.type == "fastled" %}
+                      <select name="settings[pattern]" class="form-control">
+                        <option value="">--Pattern</option>
+                        {% for pattern in patterns %}
+                          <option value="{{ pattern }}">{{ pattern }}</option>
+                        {%- endfor %}
+                      </select>
+                      <select name="settings[palette]" class="form-control">
+                        <option value="">--Palette</option>
+                        {% for palette in palettes %}
+                          <option value="{{ palette }}">{{ palette }}</option>
+                        {%- endfor %}
+                      </select>
+                    {% endif %}
                     <input type="hidden" name="light" value="{{ lightId }}">
                     <input type="hidden" name="cmd" value="create-color-schedule">
                     <button class="btn btn-default" type="submit">Create</button>

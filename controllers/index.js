@@ -14,6 +14,7 @@ router.get('/', async function (req, res, next) {
 
   var templateData = {}
   let light
+  let result
   templateData.colors = require('../lib/colors')
   templateData.palettes = lights.fastled.PALETTES
   templateData.patterns = lights.fastled.PATTERNS
@@ -21,15 +22,13 @@ router.get('/', async function (req, res, next) {
 
   for (let i = 0; i < allLights.length; i++) {
     light = allLights[i]
-    if (light.type === 'hue') {
-      const result = await lights.hue.getState(light)
-      if (result === false) {
-        console.log(`Failed to get state for ${JSON.stringify(light)}`)
-        continue
-      }
-      light.state = (result.on) ? 'On' : 'Off'
-      light.result = result
+    result = await lights.getState(light)
+    if (result === false) {
+      console.log(`Failed to get state for ${JSON.stringify(light)}`)
+      continue
     }
+    light.state = (result.on) ? 'On' : 'Off'
+    light.result = result
     templateData.lights[light.id] = light
   }
   res.render('index', templateData)
@@ -41,6 +40,7 @@ router.post('/', async function (req, res, next) {
   }
   let light
   let stayOnMinutes
+  let status
   switch (req.body.cmd) {
     case 'create-color-schedule':
       return colorSchedule.create(req, res)
@@ -106,8 +106,9 @@ router.post('/', async function (req, res, next) {
 
     case 'toggle-keep-on':
     case 'toggle-with-timer':
-      light = await lights.get(req.body.light)
-      if (light.status.on) {
+      light = await req.db.lights.get(req.body.light)
+      status = await lights.getState(light)
+      if (status.on) {
         await lights.turnOff(req.body.light)
         lights.addLog(req.body.light, `Button turn-off for light ${req.body.light}.`)
         res.send('Turned off')

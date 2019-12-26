@@ -1,3 +1,4 @@
+require('dotenv').config()
 const pkg = require('./package')
 const express = require('express')
 const session = require('express-session')
@@ -95,8 +96,9 @@ db.event.on('loaded', function () {
   // Once each minute, make sure that if the light is on
   // and that light has a color schedule, the scheduled color
   // is used
+  const checkFrequency = process.env.CHECK_FREQUENCY || 60
   setTimeout(function () {
-    setInterval(lightWatcher, 60 * 1000)
-  }, (60 - (new Date()).getSeconds()) * 1000)
+    setInterval(lightWatcher, checkFrequency * 1000)
+  }, (checkFrequency - (new Date()).getSeconds()) * 1000)
   lightWatcher()
 })

@@ -45,6 +45,7 @@ router.post('/', async function (req, res, next) {
   let light
   let stayOnMinutes
   let status
+  let hasError = false
   switch (req.body.cmd) {
     case 'create-color-schedule':
       return colorSchedule.create(req, res)
@@ -55,24 +56,38 @@ router.post('/', async function (req, res, next) {
     case 'delete-color-schedule':
       return colorSchedule.delete(req, res)
 
-    case 'timer-length':
-      stayOnMinutes = parseInt(req.body.minutes)
-      if (isNaN(stayOnMinutes)) {
-        req.flash('error', `Invalid number input supplied - ${req.body.minutes}`)
-        res.redirect('/')
+    case 'settings':
+      light = req.db.lights.get(req.body.light)
+      if (req.body.setting.timer) {
+        stayOnMinutes = parseInt(req.body.setting.timer)
+        if (isNaN(stayOnMinutes)) {
+          req.flash('error', `Invalid number input supplied - ${req.body.setting.timer}`)
+          hasError = true
+        } else {
+          light.settings.stayOnMinutes = stayOnMinutes
+        }
       }
-      light = req.db.lights.get(req.body.light)
-      req.flash('success', 'Timer has been successfully set for the light!')
-      light.settings.stayOnMinutes = stayOnMinutes
-      req.db.lights.update(light)
-      res.redirect('/')
-      return
 
-    case 'default-color':
-      req.flash('success', 'Default color has been successfully set for the light!')
-      light = req.db.lights.get(req.body.light)
-      light.settings.color = req.body.color
-      req.db.lights.update(light)
+      if (req.body.setting.color) {
+        light.settings.color = req.body.setting.color
+      }
+
+      if (req.body.setting.brightness) {
+        light.settings.brightness = req.body.setting.brightness
+      }
+
+      if (req.body.setting.pattern) {
+        light.settings.pattern = req.body.setting.pattern
+      }
+
+      if (req.body.setting.palette) {
+        light.settings.palette = req.body.setting.palette
+      }
+
+      if (hasError === false) {
+        req.flash('success', 'Settings have been updated for the light')
+        req.db.lights.update(light)
+      }
       res.redirect('/')
       return
 
@@ -82,15 +97,6 @@ router.post('/', async function (req, res, next) {
         req.db.lights.remove(light)
       }
       req.flash('success', 'Offline lights successfully removed!')
-      res.redirect('/')
-      return
-
-    case 'default-brightness':
-      light = req.db.lights.get(req.body.light)
-      light.settings.brightness = req.body.brightness
-      req.db.lights.update(light)
-
-      req.flash('success', 'Default brightness has been successfully set for the light!')
       res.redirect('/')
       return
 

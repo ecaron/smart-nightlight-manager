@@ -17,12 +17,12 @@
     "moment": "2.24.0",
     "morgan": "1.9.1",
     "node-hue-api": "3.4.3",
-    "nunjucks": "3.2.0",
+    "nunjucks": "^3.2.1",
     "timepicker": "1.12.0",
     "winston": "3.2.1"
   },
   "devDependencies": {
-    "standard": "14.3.1",
+    "standard": "14.3.3",
     "snazzy": "8.0.0"
   },
   "standard": {

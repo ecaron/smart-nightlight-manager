@@ -53,7 +53,7 @@ $(document).ready(function () {
 
   $('.light-experiment').on('submit', function (e) {
     e.preventDefault()
-    var data = {
+    const data = {
       cmd: 'experiment'
     }
     $.each($(this).serializeArray(), function (i, field) {

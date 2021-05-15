@@ -8,22 +8,21 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "body-parser": "1.19.0",
     "connect-flash": "0.1.1",
-    "dotenv": "^8.2.0",
+    "dotenv": "^9.0.2",
     "express": "4.17.1",
     "express-session": "1.17.0",
-    "lokijs": "^1.5.8",
-    "moment": "2.24.0",
-    "morgan": "1.9.1",
-    "node-hue-api": "3.4.3",
-    "nunjucks": "^3.2.1",
-    "timepicker": "1.12.0",
-    "winston": "3.2.1"
+    "lokijs": "^1.5.12",
+    "moment": "2.29.1",
+    "morgan": "1.10.0",
+    "node-hue-api": "^5.0.0-beta.2",
+    "nunjucks": "^3.2.3",
+    "timepicker": "1.13.18",
+    "winston": "3.3.3"
   },
   "devDependencies": {
-    "standard": "14.3.3",
-    "snazzy": "8.0.0"
+    "snazzy": "9.0.0",
+    "standard": "16.0.3"
   },
   "standard": {
     "ignore": [

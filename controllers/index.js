@@ -12,7 +12,7 @@ router.get('/', async function (req, res, next) {
     return next(err)
   }
 
-  var templateData = {}
+  const templateData = {}
   let light
   let result
   templateData.colors = require('../lib/colors')

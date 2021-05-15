@@ -6,7 +6,6 @@ const flash = require('connect-flash')
 const nunjucks = require('nunjucks')
 const path = require('path')
 
-const bodyParser = require('body-parser')
 const db = require('./lib/db')
 
 process.on('uncaughtException', function (err) {
@@ -71,8 +70,8 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 app.use(require('morgan')('combined', { stream: logger.stream }))
 app.use(require('./controllers'))

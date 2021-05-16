@@ -1,7 +1,7 @@
 /* global $:false, moment:false, confirm:false */
 $(document).ready(function () {
-  $('ul.navbar-nav li').each(function (i, elem) {
-    if ($('a', elem).attr('href') === window.location.pathname) {
+  $('ul.navbar-nav li a').each(function (i, elem) {
+    if ($(elem).attr('href') === window.location.pathname) {
       $(elem).addClass('active')
     }
   })
@@ -20,7 +20,7 @@ $(document).ready(function () {
     $(span).html(moment($(span).data('time')).fromNow())
   })
 
-  $('button.close').on('click', function () {
+  $('button.btn-close').on('click', function () {
     $(this).parents('p').hide()
   })
 
@@ -38,11 +38,6 @@ $(document).ready(function () {
     if (!confirm('Are you sure?')) {
       e.preventDefault()
     }
-  })
-
-  $('.expand-log').on('click', function () {
-    $(this).parents('.panel').find('.panel-body').removeClass('hide')
-    $(this).remove()
   })
 
   $('#configure-hue').on('submit', function (e) {

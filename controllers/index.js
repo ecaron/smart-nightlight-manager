@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const lights = require('../lib/lights')
+const lightWatcher = require('../lib/light-watcher')
+
 const colorSchedule = require('../lib/color-schedule')
 router.use('/settings', require('./settings'))
 
@@ -42,6 +44,7 @@ router.post('/', async function (req, res, next) {
   if (!req.body.cmd) {
     return next(new Error('POST without a cmd'))
   }
+  console.log(req.body)
   let light
   let stayOnMinutes
   let status
@@ -87,6 +90,7 @@ router.post('/', async function (req, res, next) {
       if (hasError === false) {
         req.flash('success', 'Settings have been updated for the light')
         req.db.lights.update(light)
+        lightWatcher.update()
       }
       res.redirect('/')
       return

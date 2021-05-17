@@ -49,12 +49,12 @@
         </h1>
 
         <div class="card mb-3">
-          <div class="card-body">
-            <i class="bi-plus float-end expand-log" data-bs-toggle="collapse" data-bs-target="#logs-{{ lightId }}" aria-expanded="false" aria-controls="logs-{{ lightId }}"" aria-hidden="true"></i>
+          <div class="card-body mb-0 pb-0">
+            <i class="bi-plus-circle float-end expand-log" data-bs-toggle="collapse" data-bs-target="#logs-{{ lightId }}" aria-expanded="false" aria-controls="logs-{{ lightId }}"" aria-hidden="true"></i>
             <h5 class="card-title">Logs</h5>
           </div>
           <div class="collapse" id="logs-{{ lightId }}">
-            <div class="card-body">
+            <div class="card-body mt-0 pt-0">
               {% if light.logs|length %}
                 <ul class="list-unstyled">
                   {% for log in light.logs %}
@@ -71,52 +71,43 @@
         <div class="card mb-3">
           <div class="card-body">
             <h5 class="card-title">Settings</h5>
-            <form method="post" class="row">
+            <form method="post" class="row g-1">
               <input type="hidden" name="light" value="{{ lightId }}">
               <input type="hidden" name="cmd" value="settings">
-              <div class="col-12 col-sm-6">
+              <div class="col-auto">
                 <div class="row">
-                  <label for="minutes-{{ lightId }}" class="col-6 col-form-label text-end">Timer Minutes</label>
+                  <label for="minutes-{{ lightId }}" class="col-6 col-form-label text-end">Timer <small class="text-muted">minutes</small></label>
                   <div class="col-6">
                     <input class="form-control" type="number" id="minutes-{{ lightId }}" name="setting[timer]" placeholder="60" value="{{ light.settings.stayOnMinutes }}" style="max-width:6em">
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-sm-6">
-                <div class="row">
-                  <label for="default-color-{{ lightId }}" class="col-6 col-form-label text-end">Default Color</label>
-                  <div class="col-6">
-                    <button class="btn btn-light" data-jscolor="{
-                      valueElement: '#default-color-{{ lightId }}',
-                      backgroundColor: '#300',
-                      format: 'hex'
-                    }">Pick color</button>
-                    <input name="setting[color]" id="default-color-{{ lightId }}" value="#{{ light.settings.color }}" type="hidden">
-                  </div>
-                </div>
+              <div class="col-auto">
+                <button class="btn btn-light color-btn" data-jscolor="{
+                  valueElement: '#default-color-{{ lightId }}',
+                  backgroundColor: '#300',
+                  format: 'hex'
+                }">Default Color</button>
+                <input name="setting[color]" id="default-color-{{ lightId }}" value="#{{ light.settings.color }}" type="hidden">
               </div>
 
-              <div class="col-12 col-sm-6">
-                <div class="row">
-                  <label for="default-brightness-{{ lightId }}" class="col-6 col-form-label text-end">Default Brightness</label>
-                  <div class="col-6">
-                    <select name="setting[brightness]" class="form-select" id="default-brightness-{{ lightId }}" >
-                      <option value="0" {% if light.settings.brightness == "0" %}selected="selected"{% endif %}>0% (Dimmest)</option>
-                      {% for i in range(1, 5, 1) %}
-                        <option value="{{ i }}" {% if light.settings.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
-                      {% endfor %}
-                      {% for i in range(5, 95, 5) %}
-                        <option value="{{ i }}" {% if light.settings.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
-                      {% endfor %}
-                      <option value="100" {% if light.settings.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
-                    </select>
-                  </div>
-                </div>
+              <div class="col-auto">
+                <select name="setting[brightness]" class="form-select" id="default-brightness-{{ lightId }}" >
+                  <option value="0" disabled>Brightness</option>
+                  <option value="0" {% if light.settings.brightness == "0" %}selected="selected"{% endif %}>0% (Dimmest)</option>
+                  {% for i in range(1, 5, 1) %}
+                    <option value="{{ i }}" {% if light.settings.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
+                  {% endfor %}
+                  {% for i in range(5, 95, 5) %}
+                    <option value="{{ i }}" {% if light.settings.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
+                  {% endfor %}
+                  <option value="100" {% if light.settings.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
+                </select>
               </div>
 
               {% if light.type == "fastled" %}
-                <div class="col-12 col-sm-6">
+                <div class="col-auto">
                   <div class="row">
                     <label for="default-pattern-{{ lightId }}" class="col-6 col-form-label text-end">Default Pattern</label>
                     <div class="col-6">
@@ -129,7 +120,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-12 col-sm-6">
+                <div class="col-auto">
                   <div class="row">
                     <label for="default-palette-{{ lightId }}" class="col-6 col-form-label text-end">Default Palette</label>
                     <div class="col-6">
@@ -144,12 +135,8 @@
                 </div>
               {% endif %}
 
-              <div class="col-12 col-sm-6">
-                <div class="row">
-                  <div class="col-sm-6 offset-sm-6 mt-1">
-                    <button class="btn btn-secondary" type="submit">Save</button>
-                  </div>
-                </div>
+              <div class="col-auto">
+                <button class="btn btn-secondary" type="submit">Save</button>
               </div>
             </form>
           </div>
@@ -157,32 +144,37 @@
 
         <div class="card">
           <div class="card-body">
-            <h5 class="card-heading">Color Schedule</h5>
+            <h4 class="card-title">Color Schedule</h4>
             {% set count = 0 %}
             {% for scheduleId, schedule in light.colorSchedule %}
               {% set count = count + 1 %}
-              <div class="row" style="border-bottom:1px solid #eaeaea;margin-bottom:1em">
-                <div class="col-10 col-md-9">
-                  <form method="post" class="row">
-                    <div class="col-6 col-sm-4">
-                      <input type="text" name="start_time" value="{{ schedule.start }}" class="time-input form-control" placeholder="Start Time">
-                      <input type="text" name="end_time" value="{{ schedule.end }}" class="time-input form-control" placeholder="End Time">
+              <div class="row">
+                <div class="col-12" style="border-bottom:1px solid #eaeaea">
+                  <form method="post" class="row mb-1 g-1">
+                    <div class="col-auto">
+                      <input type="text" name="start_time" value="{{ schedule.start }}" class="time-picker form-control" placeholder="Start Time">
                     </div>
-                    <div class="col-6 col-sm-4">
-                      <button class="btn btn-light" data-jscolor="{
+                    <div class="col-auto">
+                        <input type="text" name="end_time" value="{{ schedule.end }}" class="time-picker form-control" placeholder="End Time">
+                    </div>
+                    <div class="col-auto">
+                      <button class="btn btn-light color-btn" data-jscolor="{
                         valueElement: '#color-{{ lightId }}-{{ count }}',
                         backgroundColor: '#333',
                         format: 'hex'
                       }">Pick color</button>
                       <input type="hidden" id="color-{{ lightId }}-{{ count }}" name="setting[color]" value="#{{ schedule.color }}">
+                    </div>
+                    <div class="col-auto">
                       <select name="state" class="form-select">
-                        <option value="asis" {% if schedule.state == 'asis' %}selected="selected"{% endif %}>Leave</option>
+                        <option value="asis" {% if schedule.state == 'asis' %}selected="selected"{% endif %}>Leave As-Is</option>
                         <option value="on" {% if schedule.state == 'on' %}selected="selected"{% endif %}>Turn On</option>
                         <option value="off" {% if schedule.state == 'off' %}selected="selected"{% endif %}>Turn Off</option>
                       </select>
                     </div>
-                    <div class="col-6 col-sm-4">
+                    <div class="col-auto">
                       <select name="settings[brightness]" class="form-select">
+                        <option value="0" disabled>Brightness</option>
                         <option value="0" {% if schedule.brightness == "0" %}selected="selected"{% endif %}>0% (Dimmest)</option>
                         {% for i in range(1, 5, 1) %}
                           <option value="{{ i }}" {% if schedule.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
@@ -192,20 +184,26 @@
                         {% endfor %}
                         <option value="100" {% if schedule.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
                       </select>
-                      {% if light.type == "fastled" %}
+                    </div>
+                    {% if light.type == "fastled" %}
+                      <div class="col-auto">
                         <select name="settings[pattern]" class="form-select">
                           <option value="">--Pattern</option>
                           {% for pattern in patterns %}
                             <option value="{{ pattern }}" {% if schedule.pattern == pattern %}selected="selected"{% endif %}>{{ pattern }}</option>
                           {% endfor %}
                         </select>
+                      </div>
+                      <div class="col-auto">
                         <select name="settings[palette]" class="form-select">
                           <option value="">--Palette</option>
                           {% for palette in palettes %}
                             <option value="{{ palette }}"{% if schedule.palette == palette %}selected="selected"{% endif %}>{{ palette }}</option>
                           {% endfor %}
                         </select>
-                      {% endif %}
+                      </div>
+                    {% endif %}
+                    <div class="col-auto">
                       <input type="hidden" name="light" value="{{ lightId }}">
                       <input type="hidden" name="id" value="{{ scheduleId }}">
                       <input type="hidden" name="cmd" value="update-color-schedule">
@@ -227,27 +225,32 @@
 
             {% endfor %}
 
-            <h4>Set New Color Schedule</h4>
-            <form method="post" class="row">
-              <div class="col-6 col-sm-4">
-                <input type="text" name="start_time" class="time-input form-control" placeholder="Start Time">
-                <input type="text" name="end_time" class="time-input form-control" placeholder="End Time">
+            <h4 class="card-title">Set New Color Schedule</h4>
+            <form method="post" class="row g-1">
+              <div class="col-auto">
+                <input type="text" name="start_time" class="time-picker form-control" placeholder="Start Time">
               </div>
-              <div class="col-6 col-sm-4">
-                <button class="btn btn-light" data-jscolor="{
+              <div class="col-auto">
+                <input type="text" name="end_time" class="time-picker form-control" placeholder="End Time">
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-light color-btn" data-jscolor="{
                   valueElement: '#color-{{ lightId }}-new',
                   backgroundColor: '#333',
                   format: 'hex'
                 }">Pick color</button>
                 <input type="hidden" id="color-{{ lightId }}-new" name="setting[color]">
+              </div>
+              <div class="col-auto">
                 <select name="state" class="form-select">
-                  <option value="asis">Leave</option>
+                  <option value="asis">Leave As-Is</option>
                   <option value="on">Turn On</option>
                   <option value="off">Turn Off</option>
                 </select>
               </div>
-              <div class="col-6 col-sm-4">
+              <div class="col-auto">
                 <select name="settings[brightness]" class="form-select">
+                  <option value="0">Brightness</option>
                   <option value="0">0% (Dimmest)</option>
                   {% for i in range(1, 5, 1) %}
                     <option value="{{ i }}">{{ i }}%</option>
@@ -257,20 +260,26 @@
                   {% endfor %}
                   <option value="100">100% (Brightest)</option>
                 </select>
-                {% if light.type == "fastled" %}
+              </div>
+              {% if light.type == "fastled" %}
+                <div class="col-auto">
                   <select name="settings[pattern]" class="form-select">
                     <option value="">--Pattern</option>
                     {% for pattern in patterns %}
                       <option value="{{ pattern }}">{{ pattern }}</option>
                     {% endfor %}
                   </select>
+                </div>
+                <div class="col-auto">
                   <select name="settings[palette]" class="form-select">
                     <option value="">--Palette</option>
                     {% for palette in palettes %}
                       <option value="{{ palette }}">{{ palette }}</option>
                     {% endfor %}
                   </select>
-                {% endif %}
+                </div>
+              {% endif %}
+              <div class="col-auto">
                 <input type="hidden" name="light" value="{{ lightId }}">
                 <input type="hidden" name="cmd" value="create-color-schedule">
                 <button class="btn btn-secondary" type="submit">Create</button>
@@ -313,8 +322,8 @@
   <div class="row">
     <div class="col-md-8 col-12 p-3 hover-zone">
       <h2>Experiment With Hue</h2>
-      <form method="post" action="#" class="row light-experiment">
-        <div class="col-6 col-md-3">
+      <form method="post" action="#" class="row g-1 light-experiment">
+        <div class="col-auto">
           <select name="light" class="form-select">
             <option value="">--Select One</option>
             {% for lightId, light in lights %}
@@ -324,16 +333,17 @@
             {% endfor %}
           </select>
         </div>
-        <div class="col-6 col-md-3">
-          <button class="btn btn-light" data-jscolor="{
+        <div class="col-auto">
+          <button class="btn btn-light color-btn" data-jscolor="{
             valueElement: '#color-experiment',
             backgroundColor: '#333',
             format: 'hex'
           }">Pick color</button>
           <input type="hidden" id="color-experiment" name="setting[color]">
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-auto">
           <select name="settings[brightness]" class="form-select">
+            <option value="0" disabled>Brightness</option>
             <option value="0">0% (Dimmest)</option>
             {% for i in range(1, 5, 1) %}
               <option value="{{ i }}">{{ i }}%</option>
@@ -344,7 +354,7 @@
             <option value="100">100% (Brightest)</option>
           </select>
         </div>
-        <div class="col-6 pt-1">
+        <div class="col-auto">
           <input type="hidden" name="type" value="hue">
           <input type="hidden" name="intend_state" id="intend_state_hue">
           <button class="btn btn-secondary" type="submit" onclick="$('#intend_state_hue').val('on')" value="on">Turn On</button>
@@ -355,8 +365,8 @@
 
     <div class="col-11 col-md-8 hover-zone p-3">
       <h2>Experiment With FastLED</h2>
-      <form method="post" action="#" class="light-experiment row">
-        <div class="col-6 col-md-3">
+      <form method="post" action="#" class="light-experiment row g-1">
+        <div class="col-auto">
           <select name="light" class="form-select">
             <option value="">--Select One</option>
             {% for lightId, light in lights %}
@@ -366,7 +376,7 @@
             {% endfor %}
           </select>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-auto">
           <select name="settings[pattern]" class="form-select">
             <option value="">--Pattern</option>
             {% for pattern in patterns %}
@@ -374,7 +384,7 @@
             {% endfor %}
           </select>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-auto">
           <select name="settings[palette]" class="form-select">
             <option value="">--Palette</option>
             {% for palette in palettes %}
@@ -383,16 +393,17 @@
           </select>
         </div>
 
-        <div class="col-6 col-md-3">
-          <button class="btn btn-light" data-jscolor="{
+        <div class="col-auto">
+          <button class="btn btn-light color-btn" data-jscolor="{
             valueElement: '#color-experiment-fastled',
             backgroundColor: '#333',
             format: 'hex'
           }">Pick color</button>
           <input type="hidden" name="settings[color]" id="color-experiment-fastled">
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-auto">
           <select name="settings[brightness]" class="form-select">
+            <option value="0" disabled>Brightness</option>
             <option value="0">0% (Dimmest)</option>
             {% for i in range(1, 5, 1) %}
               <option value="{{ i }}">{{ i }}%</option>
@@ -403,7 +414,7 @@
             <option value="100">100% (Brightest)</option>
           </select>
         </div>
-        <div class="col-6 pt-1">
+        <div class="col-auto">
           <input type="hidden" name="type" value="fastled">
           <input type="hidden" name="intend_state" id="intend_state_fastled">
           <button class="btn btn-secondary" type="submit" onclick="$('#intend_state_fastled').val('on')" value="on">Turn On</button>

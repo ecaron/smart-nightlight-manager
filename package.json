@@ -9,16 +9,17 @@
   "dependencies": {
     "axios": "^0.21.1",
     "bootstrap-icons": "^1.5.0",
+    "cie-rgb-color-converter": "^1.0.6",
     "connect-flash": "0.1.1",
     "dotenv": "^9.0.2",
     "express": "4.17.1",
     "express-session": "1.17.0",
+    "flatpickr": "^4.6.9",
     "lokijs": "^1.5.12",
     "moment": "2.29.1",
     "morgan": "1.10.0",
     "node-hue-api": "^5.0.0-beta.2",
     "nunjucks": "^3.2.3",
-    "timepicker": "1.13.18",
     "winston": "3.3.3"
   },
   "devDependencies": {

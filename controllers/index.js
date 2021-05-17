@@ -44,7 +44,7 @@ router.post('/', async function (req, res, next) {
   if (!req.body.cmd) {
     return next(new Error('POST without a cmd'))
   }
-  console.log(req.body)
+
   let light
   let stayOnMinutes
   let status
@@ -90,7 +90,7 @@ router.post('/', async function (req, res, next) {
       if (hasError === false) {
         req.flash('success', 'Settings have been updated for the light')
         req.db.lights.update(light)
-        lightWatcher.update()
+        lightWatcher.update(req.body.light)
       }
       res.redirect('/')
       return
@@ -99,6 +99,7 @@ router.post('/', async function (req, res, next) {
       for (let i = 0; i < req.body.lights.length; i++) {
         light = req.db.lights.get(req.body.lights[i])
         req.db.lights.remove(light)
+        lightWatcher.update(req.body.lights[i])
       }
       req.flash('success', 'Offline lights successfully removed!')
       res.redirect('/')

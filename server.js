@@ -38,7 +38,7 @@ app.use(session({
 }))
 app.use(flash())
 
-app.use('/scripts/timepicker/', express.static('node_modules/timepicker'))
+app.use('/scripts/flatpickr/', express.static('node_modules/flatpickr/dist'))
 app.use('/scripts/moment/', express.static('node_modules/moment'))
 app.use('/css/icons/', express.static('node_modules/bootstrap-icons/font'))
 app.use(express.static('public'))

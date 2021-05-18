@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2021-05-17
+### Added
+- The [bootstrap-icons](https://icons.getbootstrap.com/) library
+- The [cie-rgb-color-converter](https://www.npmjs.com/package/cie-rgb-color-converter) library, to have RGB->XY conversion happen outside of the Node Hue library
+- A favicon
+
+### Changed
+- To the [flatpickr](https://flatpickr.js.org/) library for time selection
+- The logic for turn-on to turn-off when time is up (unless there's an adjacent schedule)
+- The "Refresh Page" message now only shows if something actually changed
+- Conflicting state changes now use logic to understand who should take precedent
+- The system now makes state changes based on the schedule, rather than pulverizing all lights every minute
+- Upgraded the following libraries: jscolor, jQuery, Bootstrap, node-hue-api, dotenv, lokijs, moment, morgan, nunjucks, winston
+
+### Removed
+- The following libraries: timepicker and body-parser
+- The glyphicons
+- The routes directory (wasn't used - that logic is in the controller)
+
 ## [1.0.0] - 2019-12-08
 ### Added
 - Support for more than just Hue lights

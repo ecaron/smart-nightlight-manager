@@ -9,7 +9,7 @@
 
   <div class="row">
     {% for lightId, light in lights %}
-      <div class="col-md-8 col-11 hover-zone py-3">
+      <div class="col-md-9 col-11 hover-zone py-3">
         <div class="d-lg-none"><hr></div>
 
         <div class="float-end btn-group" role="group" aria-label="Light toggles">
@@ -41,16 +41,17 @@
             </div>
           {% endif %}
         </div>
-        <h1>{{ light.name }}
-          {% if light.timerTime %}
-            <small>Timer is active. Turning off <span class="timer-countdown" data-time="{{ light.timerTime }}"></span>.</small>
-          {% endif %}
-          <span class="fs-6">The light is <strong>{% if light.result.on %}ON{% else %}OFF{% endif %}</strong></span>
+        <h1>
+          {{ light.name }}
+          <span class="fs-4">The light is <strong>{% if light.result.on %}ON{% else %}OFF{% endif %}</strong>.</span>
         </h1>
+        {% if light.timerTime %}
+          <h4>Timer is active. Turning off <span class="timer-countdown" data-time="{{ light.timerTime }}"></span>.</h4>
+        {% endif %}
 
         <div class="card mb-3">
           <div class="card-body mb-0 pb-0">
-            <i class="bi-plus-circle float-end expand-log" data-bs-toggle="collapse" data-bs-target="#logs-{{ lightId }}" aria-expanded="false" aria-controls="logs-{{ lightId }}"" aria-hidden="true"></i>
+            <i class="bi-plus-circle float-end expand-log" data-bs-toggle="collapse" data-bs-target="#logs-{{ lightId }}" aria-expanded="false" aria-controls="logs-{{ lightId }}" aria-hidden="true"></i>
             <h5 class="card-title">Logs</h5>
           </div>
           <div class="collapse" id="logs-{{ lightId }}">
@@ -87,21 +88,18 @@
                 <button class="btn btn-light color-btn" data-jscolor="{
                   valueElement: '#default-color-{{ lightId }}',
                   backgroundColor: '#300',
-                  format: 'hex'
+                  format: 'hex',
+                  hash: false
                 }">Default Color</button>
-                <input name="setting[color]" id="default-color-{{ lightId }}" value="#{{ light.settings.color }}" type="hidden">
+                <input name="setting[color]" id="default-color-{{ lightId }}" value="{{ light.settings.color }}" type="hidden">
               </div>
 
               <div class="col-auto">
                 <select name="setting[brightness]" class="form-select" id="default-brightness-{{ lightId }}" >
                   <option value="0" disabled>Brightness</option>
                   <option value="0" {% if light.settings.brightness == "0" %}selected="selected"{% endif %}>0% (Dimmest)</option>
-                  {% for i in range(1, 5, 1) %}
-                    <option value="{{ i }}" {% if light.settings.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
-                  {% endfor %}
-                  {% for i in range(5, 95, 5) %}
-                    <option value="{{ i }}" {% if light.settings.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
-                  {% endfor %}
+                  {% for i in range(1, 5, 1) %}<option value="{{ i }}" {% if light.settings.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>{% endfor %}
+                  {% for i in range(5, 95, 5) %}<option value="{{ i }}" {% if light.settings.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>{% endfor %}
                   <option value="100" {% if light.settings.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
                 </select>
               </div>
@@ -113,9 +111,7 @@
                     <div class="col-6">
                       <select name="setting[pattern]" class="form-select" id="default-pattern-{{ lightId }}" >
                         <option value="">--Pattern</option>
-                        {% for pattern in patterns %}
-                          <option value="{{ pattern }}" {% if light.settings.pattern == pattern %}selected="selected"{% endif %}>{{ pattern }}</option>
-                        {% endfor %}
+                        {% for pattern in patterns %}<option value="{{ pattern }}" {% if light.settings.pattern == pattern %}selected="selected"{% endif %}>{{ pattern }}</option>{% endfor %}
                       </select>
                     </div>
                   </div>
@@ -126,9 +122,7 @@
                     <div class="col-6">
                       <select name="setting[palette]" class="form-select" id="default-palette-{{ lightId }}" >
                         <option value="">--Palette</option>
-                        {% for palette in palettes %}
-                          <option value="{{ palette }}"{% if light.settings.palette == palette %}selected="selected"{% endif %}>{{ palette }}</option>
-                        {% endfor %}
+                        {% for palette in palettes %}<option value="{{ palette }}"{% if light.settings.palette == palette %}selected="selected"{% endif %}>{{ palette }}</option>{% endfor %}
                       </select>
                     </div>
                   </div>
@@ -161,9 +155,10 @@
                       <button class="btn btn-light color-btn" data-jscolor="{
                         valueElement: '#color-{{ lightId }}-{{ count }}',
                         backgroundColor: '#333',
-                        format: 'hex'
+                        format: 'hex',
+                        hash: false
                       }">Pick color</button>
-                      <input type="hidden" id="color-{{ lightId }}-{{ count }}" name="setting[color]" value="#{{ schedule.color }}">
+                      <input type="hidden" id="color-{{ lightId }}-{{ count }}" name="settings[color]" value="{{ schedule.color }}">
                     </div>
                     <div class="col-auto">
                       <select name="state" class="form-select">
@@ -176,12 +171,8 @@
                       <select name="settings[brightness]" class="form-select">
                         <option value="0" disabled>Brightness</option>
                         <option value="0" {% if schedule.brightness == "0" %}selected="selected"{% endif %}>0% (Dimmest)</option>
-                        {% for i in range(1, 5, 1) %}
-                          <option value="{{ i }}" {% if schedule.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
-                        {% endfor %}
-                        {% for i in range(5, 95, 5) %}
-                          <option value="{{ i }}" {% if schedule.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
-                        {% endfor %}
+                        {% for i in range(1, 5, 1) %}<option value="{{ i }}" {% if schedule.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>{% endfor %}
+                        {% for i in range(5, 95, 5) %}<option value="{{ i }}" {% if schedule.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>{% endfor %}
                         <option value="100" {% if schedule.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
                       </select>
                     </div>
@@ -189,17 +180,13 @@
                       <div class="col-auto">
                         <select name="settings[pattern]" class="form-select">
                           <option value="">--Pattern</option>
-                          {% for pattern in patterns %}
-                            <option value="{{ pattern }}" {% if schedule.pattern == pattern %}selected="selected"{% endif %}>{{ pattern }}</option>
-                          {% endfor %}
+                          {% for pattern in patterns %}<option value="{{ pattern }}" {% if schedule.pattern == pattern %}selected="selected"{% endif %}>{{ pattern }}</option>{% endfor %}
                         </select>
                       </div>
                       <div class="col-auto">
                         <select name="settings[palette]" class="form-select">
                           <option value="">--Palette</option>
-                          {% for palette in palettes %}
-                            <option value="{{ palette }}"{% if schedule.palette == palette %}selected="selected"{% endif %}>{{ palette }}</option>
-                          {% endfor %}
+                          {% for palette in palettes %}<option value="{{ palette }}"{% if schedule.palette == palette %}selected="selected"{% endif %}>{{ palette }}</option>{% endfor %}
                         </select>
                       </div>
                     {% endif %}
@@ -209,17 +196,12 @@
                       <input type="hidden" name="cmd" value="update-color-schedule">
                       <button class="btn btn-secondary" type="submit">Update</button>
                     </div>
-                  </form>
-                </div>
-                <div class="col-2 col-md-3">
-                  <form method="post" class="confirm-submit">
-                    <input type="hidden" name="light" value="{{ lightId }}">
-                    <input type="hidden" name="id" value="{{ scheduleId }}">
-                    <input type="hidden" name="cmd" value="delete-color-schedule">
-                    <button class="btn btn-link" type="submit">
-                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                    </button>
-                  </form>
+                    <div class="col-auto">
+                      <button class="btn btn-danger delete-schedule-btn" type="button" data-light="{{ lightId }}" data-schedule="{{ scheduleId }}">
+                        <i class="bi bi-calendar-x"></i>
+                      </button>
+                    </div>
+                    </form>
                 </div>
               </div>
 
@@ -237,9 +219,10 @@
                 <button class="btn btn-light color-btn" data-jscolor="{
                   valueElement: '#color-{{ lightId }}-new',
                   backgroundColor: '#333',
-                  format: 'hex'
+                  format: 'hex',
+                  hash: false
                 }">Pick color</button>
-                <input type="hidden" id="color-{{ lightId }}-new" name="setting[color]">
+                <input type="hidden" id="color-{{ lightId }}-new" name="settings[color]">
               </div>
               <div class="col-auto">
                 <select name="state" class="form-select">
@@ -252,12 +235,8 @@
                 <select name="settings[brightness]" class="form-select">
                   <option value="0">Brightness</option>
                   <option value="0">0% (Dimmest)</option>
-                  {% for i in range(1, 5, 1) %}
-                    <option value="{{ i }}">{{ i }}%</option>
-                  {% endfor %}
-                  {% for i in range(5, 95, 5) %}
-                    <option value="{{ i }}">{{ i }}%</option>
-                  {% endfor %}
+                  {% for i in range(1, 5, 1) %}<option value="{{ i }}">{{ i }}%</option>{% endfor %}
+                  {% for i in range(5, 95, 5) %}<option value="{{ i }}">{{ i }}%</option>{% endfor %}
                   <option value="100">100% (Brightest)</option>
                 </select>
               </div>
@@ -265,17 +244,13 @@
                 <div class="col-auto">
                   <select name="settings[pattern]" class="form-select">
                     <option value="">--Pattern</option>
-                    {% for pattern in patterns %}
-                      <option value="{{ pattern }}">{{ pattern }}</option>
-                    {% endfor %}
+                    {% for pattern in patterns %}<option value="{{ pattern }}">{{ pattern }}</option>{% endfor %}
                   </select>
                 </div>
                 <div class="col-auto">
                   <select name="settings[palette]" class="form-select">
                     <option value="">--Palette</option>
-                    {% for palette in palettes %}
-                      <option value="{{ palette }}">{{ palette }}</option>
-                    {% endfor %}
+                    {% for palette in palettes %}<option value="{{ palette }}">{{ palette }}</option>{% endfor %}
                   </select>
                 </div>
               {% endif %}
@@ -300,7 +275,7 @@
 
   {% if offlineLights|length > 0 %}
     <div class="row">
-      <div class="col-md-8 col-11 hover-zone p3">
+      <div class="col-md-9 col-11 hover-zone p3">
         <h2>Offline Lights</h2>
         <form method="post" class="row">
           {% for offlineLight in offlineLights %}
@@ -320,7 +295,7 @@
   {% endif %}
 
   <div class="row">
-    <div class="col-md-8 col-12 p-3 hover-zone">
+    <div class="col-md-9 col-11 p-3 hover-zone">
       <h2>Experiment With Hue</h2>
       <form method="post" action="#" class="row g-1 light-experiment">
         <div class="col-auto">
@@ -337,20 +312,17 @@
           <button class="btn btn-light color-btn" data-jscolor="{
             valueElement: '#color-experiment',
             backgroundColor: '#333',
-            format: 'hex'
+            format: 'hex',
+            hash: false
           }">Pick color</button>
-          <input type="hidden" id="color-experiment" name="setting[color]">
+          <input type="hidden" id="color-experiment" name="settings[color]">
         </div>
         <div class="col-auto">
           <select name="settings[brightness]" class="form-select">
             <option value="0" disabled>Brightness</option>
             <option value="0">0% (Dimmest)</option>
-            {% for i in range(1, 5, 1) %}
-              <option value="{{ i }}">{{ i }}%</option>
-            {% endfor %}
-            {% for i in range(5, 95, 5) %}
-              <option value="{{ i }}">{{ i }}%</option>
-            {% endfor %}
+            {% for i in range(1, 5, 1) %}<option value="{{ i }}">{{ i }}%</option>{% endfor %}
+            {% for i in range(5, 95, 5) %}<option value="{{ i }}">{{ i }}%</option>{% endfor %}
             <option value="100">100% (Brightest)</option>
           </select>
         </div>
@@ -363,7 +335,7 @@
       </form>
     </div>
 
-    <div class="col-11 col-md-8 hover-zone p-3">
+    <div class="col-11 col-md-9 hover-zone p-3">
       <h2>Experiment With FastLED</h2>
       <form method="post" action="#" class="light-experiment row g-1">
         <div class="col-auto">
@@ -379,17 +351,13 @@
         <div class="col-auto">
           <select name="settings[pattern]" class="form-select">
             <option value="">--Pattern</option>
-            {% for pattern in patterns %}
-              <option value="{{ pattern }}">{{ pattern }}</option>
-            {% endfor %}
+            {% for pattern in patterns %}<option value="{{ pattern }}">{{ pattern }}</option>{% endfor %}
           </select>
         </div>
         <div class="col-auto">
           <select name="settings[palette]" class="form-select">
             <option value="">--Palette</option>
-            {% for palette in palettes %}
-              <option value="{{ palette }}">{{ palette }}</option>
-            {% endfor %}
+            {% for palette in palettes %}<option value="{{ palette }}">{{ palette }}</option>{% endfor %}
           </select>
         </div>
 
@@ -397,7 +365,8 @@
           <button class="btn btn-light color-btn" data-jscolor="{
             valueElement: '#color-experiment-fastled',
             backgroundColor: '#333',
-            format: 'hex'
+            format: 'hex',
+            hash: false
           }">Pick color</button>
           <input type="hidden" name="settings[color]" id="color-experiment-fastled">
         </div>
@@ -405,12 +374,8 @@
           <select name="settings[brightness]" class="form-select">
             <option value="0" disabled>Brightness</option>
             <option value="0">0% (Dimmest)</option>
-            {% for i in range(1, 5, 1) %}
-              <option value="{{ i }}">{{ i }}%</option>
-            {% endfor %}
-            {% for i in range(5, 95, 5) %}
-              <option value="{{ i }}">{{ i }}%</option>
-            {% endfor %}
+            {% for i in range(1, 5, 1) %}<option value="{{ i }}">{{ i }}%</option>{% endfor %}
+            {% for i in range(5, 95, 5) %}<option value="{{ i }}">{{ i }}%</option>{% endfor %}
             <option value="100">100% (Brightest)</option>
           </select>
         </div>
@@ -424,5 +389,5 @@
     </div>
   </div>
 
-  <a id="suggestRefresh" style="position:fixed;right:10px;bottom:10px;font-size:200%" href="/?skipLog=1">Page Should Be Refreshed</a>
+  <a id="suggestRefresh" style="position:fixed;right:10px;bottom:10px;font-size:200%" href="#" onclick="window.location.reload(false)">Please Refresh Page</a>
 {% endblock %}

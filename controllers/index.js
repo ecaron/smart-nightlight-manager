@@ -6,6 +6,10 @@ const lightWatcher = require('../lib/light-watcher')
 const colorSchedule = require('../lib/color-schedule')
 router.use('/settings', require('./settings'))
 
+router.get('/last-update', function (req, res, next) {
+  res.json(lights.getLastChange())
+})
+
 router.get('/', async function (req, res, next) {
   let allLights
   try {

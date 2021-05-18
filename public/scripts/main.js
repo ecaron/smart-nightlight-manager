@@ -1,4 +1,4 @@
-/* global $:false, moment:false, confirm:false */
+/* global $:false, moment:false, confirm:false, location:false */
 
 $(document).ready(function () {
   $('ul.navbar-nav li a').each(function (i, elem) {
@@ -17,8 +17,8 @@ $(document).ready(function () {
 
   // Safest way to know we're showing the right timezone
   if ($('.current-date').length) {
-    setTimeout(function() {
-      setInterval(function() {
+    setTimeout(function () {
+      setInterval(function () {
         $('.current-date').html(moment().format('h:mma'))
       }, 60 * 1000)
       $('.current-date').html(moment().format('h:mma'))
@@ -43,13 +43,13 @@ $(document).ready(function () {
     $(elem).change()
   })
 
-  var lastChange = new Date()
+  const lastChange = new Date()
   setInterval(function () {
-    $.get('/last-update', function( data ) {
+    $.get('/last-update', function (data) {
       if (new Date(data) > lastChange) {
         $('#suggestRefresh').show()
       }
-    });
+    })
   }, 60 * 1000)
   $('#suggestRefresh').hide()
 
@@ -63,10 +63,10 @@ $(document).ready(function () {
 
   $('.delete-schedule-btn').on('click', function () {
     if (confirm('Are you sure?')) {
-      $.post( '/', { cmd: 'delete-color-schedule', id: $(this).data('schedule'), light: $(this).data('light') })
-      .done(function( data ) {
-        window.location.reload(false)
-      })
+      $.post('/', { cmd: 'delete-color-schedule', id: $(this).data('schedule'), light: $(this).data('light') })
+        .done(function (data) {
+          location.reload()
+        })
     }
   })
 

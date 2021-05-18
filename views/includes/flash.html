@@ -2,8 +2,8 @@
   {% for message in success_messages %}
     <div class="row flash-boxes">
       <div class="col-xs-12">
-        <p class="bg-success" style="padding:15px">
-          <button type="button" class="pull-right close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <p class="bg-success text-white" style="padding:15px">
+          <button type="button" class="float-end btn-close" aria-label="Close"></button>
           {{ message }}
         </p>
       </div>
@@ -15,8 +15,8 @@
   {% for message in error_messages %}
     <div class="row flash-boxes">
       <div class="col-xs-12">
-        <p class="bg-danger" style="padding:15px">
-          <button type="button" class="pull-right close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <p class="bg-danger text-white" style="padding:15px">
+          <button type="button" class="float-end btn-close" aria-label="Close"></button>
           {{ message }}
         </p>
       </div>

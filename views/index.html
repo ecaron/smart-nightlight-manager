@@ -1,291 +1,272 @@
 {% extends "layout.html" %}
 
 {% block content %}
-
-  <div class="row hidden-lg hidden-md">
-    <div class="col-xs-12">
+  <div class="row d-md-none">
+    <div class="col-12">
       <h6 class="text-right"><small>Current Time:</small> <span class="current-date"></span></h6>
     </div>
   </div>
 
   <div class="row">
     {% for lightId, light in lights %}
-      <div class="col-md-8 col-sm-12 hover-zone">
-        <div class="visible-xs-block visible-sm-block visible-md-block">
-          <hr>
-        </div>
+      <div class="col-md-9 col-11 hover-zone py-3">
+        <div class="d-lg-none"><hr></div>
 
-        <div class="row">
-          <div class="col-xs-4 col-sm-3">
-            <div class="btn-group">
-              {% if light.result.on %}
-                <form method="post" class="form-inline">
-                  <div>
-                    <input type="hidden" name="light" value="{{ lightId }}">
-                    <input type="hidden" name="cmd" value="turn-off">
-                    <button class="btn btn-primary" type="submit">Turn Off</button>
-                  </div>
-                </form>
-              {% else %}
-                <form method="post" class="form-inline pull-left">
-                  <button type="submit" class="btn btn-primary">Turn On</button>
-                  <input type="hidden" name="light" value="{{ lightId }}">
-                  <input type="hidden" name="cmd" value="turn-on-keep-on">
-                </form>
-                <button type="button" class="btn btn-primary dropdown-toggle pull-left" style="margin-left:-3px" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span class="caret"></span>
-                  <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu">
-                  <li>
-                    <form method="post" class="form-inline">
-                      <input type="hidden" name="light" value="{{ lightId }}">
-                      <input type="hidden" name="cmd" value="turn-on-with-timer">
-                      <button class="btn btn-link" type="submit" style="color:white">With Timer</button>
-                    </form>
-                  </li>
-                </ul>
-              {% endif %}
-            </div>
-          </div>
-          <div class="col-xs-8 col-sm-9">
-            <h1 style="margin:0;padding:0">{{ light.name }}
-              {% if light.timerTime %}
-                <small>Timer is active. Turning off <span class="timer-countdown" data-time="{{ light.timerTime }}"></span>.</small>
-              {% endif %}
-            </h1>
-
-            <p>The light is <strong>{% if light.result.on %}ON{% else %}OFF{% endif %}</strong></p>
-
-          </div>
-        </div>
-
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <div class="row">
-              <div class="col-xs-10">Logs</div>
-              <div class="col-xs-2 text-right">
-                <span class="glyphicon glyphicon-plus expand-log" aria-hidden="true"></span>
+        <div class="float-end btn-group" role="group" aria-label="Light toggles">
+          {% if light.result.on %}
+            <form method="post" class="form-inline">
+              <div>
+                <input type="hidden" name="light" value="{{ lightId }}">
+                <input type="hidden" name="cmd" value="turn-off">
+                <button class="btn btn-primary" type="submit">Turn Off</button>
               </div>
-            </div>
-          </div>
-          <div class="panel-body hide">
-            {% if light.logs|length %}
-              <ul class="list-unstyled">
-                {% for log in light.logs %}
-                  <li><code class="text-info" style="background:#f3faf3;display:block;margin-bottom:2px">{{ log }}</code></li>
-                {% endfor %}
+            </form>
+          {% else %}
+            <form method="post" class="form-inline">
+              <input type="hidden" name="light" value="{{ lightId }}">
+              <input type="hidden" name="cmd" value="turn-on-keep-on">
+              <button type="submit" class="btn btn-primary">Turn On</button>
+            </form>
+            <div class="btn-group" role="group">
+              <button id="btnGroupDrop-{{ lightId }}" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></button>
+              <ul class="dropdown-menu" aria-labelledby="btnGroupDrop-{{ lightId }}">
+                <li>
+                  <form method="post">
+                    <input type="hidden" name="light" value="{{ lightId }}">
+                    <input type="hidden" name="cmd" value="turn-on-with-timer">
+                    <button class="btn btn-link" type="submit">With Timer</button>
+                  </form>
+                </li>
               </ul>
-            {% else %}
-              <em>No log activity.</em>
-            {% endif %}
+            </div>
+          {% endif %}
+        </div>
+        <h1>
+          {{ light.name }}
+          <span class="fs-4">The light is <strong>{% if light.result.on %}ON{% else %}OFF{% endif %}</strong>.</span>
+        </h1>
+        {% if light.timerTime %}
+          <h4>Timer is active. Turning off <span class="timer-countdown" data-time="{{ light.timerTime }}"></span>.</h4>
+        {% endif %}
+
+        <div class="card mb-3">
+          <div class="card-body mb-0 pb-0">
+            <i class="bi-plus-circle float-end expand-log" data-bs-toggle="collapse" data-bs-target="#logs-{{ lightId }}" aria-expanded="false" aria-controls="logs-{{ lightId }}" aria-hidden="true"></i>
+            <h5 class="card-title">Logs</h5>
+          </div>
+          <div class="collapse" id="logs-{{ lightId }}">
+            <div class="card-body mt-0 pt-0">
+              {% if light.logs|length %}
+                <ul class="list-unstyled">
+                  {% for log in light.logs %}
+                    <li><code class="text-info" style="background:#f3faf3;display:block;margin-bottom:2px">{{ log }}</code></li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <em>No log activity.</em>
+              {% endif %}
+            </div>
           </div>
         </div>
 
-        <div class="panel panel-default">
-          <div class="panel-heading">Settings</div>
-          <div class="panel-body">
-            <form method="post" class="form-horizontal">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">Settings</h5>
+            <form method="post" class="row g-1">
               <input type="hidden" name="light" value="{{ lightId }}">
               <input type="hidden" name="cmd" value="settings">
-              <div class="row">
-                <div class="col-xs-12 col-sm-6">
-                  <div class="form-group">
-                    <label for="minutes-{{ lightId }}" class="col-xs-6 control-label">Timer Minutes</label>
-                    <div class="col-xs-6">
-                      <input class="form-control" type="number" id="minutes-{{ lightId }}" name="setting[timer]" placeholder="60" value="{{ light.settings.stayOnMinutes }}" style="max-width:6em">
-                    </div>
+              <div class="col-auto">
+                <div class="row">
+                  <label for="minutes-{{ lightId }}" class="col-6 col-form-label text-end">Timer <small class="text-muted">minutes</small></label>
+                  <div class="col-6">
+                    <input class="form-control" type="number" id="minutes-{{ lightId }}" name="setting[timer]" placeholder="60" value="{{ light.settings.stayOnMinutes }}" style="max-width:6em">
                   </div>
                 </div>
+              </div>
 
-                <div class="col-xs-12 col-sm-6">
-                  <div class="form-group">
-                    <label for="default-color-{{ lightId }}" class="col-xs-6 control-label">Default Color</label>
-                    <div class="col-xs-6">
-                      <input name="setting[color]" id="default-color-{{ lightId }}" class="jscolor form-control" value="{{ light.settings.color }}" style="max-width:6em">
-                    </div>
-                  </div>
-                </div>
+              <div class="col-auto">
+                <button class="btn btn-light color-btn" data-jscolor="{
+                  valueElement: '#default-color-{{ lightId }}',
+                  backgroundColor: '#300',
+                  format: 'hex',
+                  hash: false
+                }">Default Color</button>
+                <input name="setting[color]" id="default-color-{{ lightId }}" value="{{ light.settings.color }}" type="hidden">
+              </div>
 
-                <div class="col-xs-12 col-sm-6">
-                  <div class="form-group">
-                    <label for="default-brightness-{{ lightId }}" class="col-xs-6 control-label">Default Brightness</label>
-                    <div class="col-xs-6">
-                      <select name="setting[brightness]" class="form-control" id="default-brightness-{{ lightId }}" >
-                        <option value="0" {% if light.settings.brightness == "0" %}selected="selected"{% endif %}>0% (Dimmest)</option>
-                        {% for i in range(1, 5, 1) %}
-                          <option value="{{ i }}" {% if light.settings.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
-                        {% endfor %}
-                        {% for i in range(5, 95, 5) %}
-                          <option value="{{ i }}" {% if light.settings.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
-                        {% endfor %}
-                        <option value="100" {% if light.settings.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
+              <div class="col-auto">
+                <select name="setting[brightness]" class="form-select" id="default-brightness-{{ lightId }}" >
+                  <option value="0" disabled>Brightness</option>
+                  <option value="0" {% if light.settings.brightness == "0" %}selected="selected"{% endif %}>0% (Dimmest)</option>
+                  {% for i in range(1, 5, 1) %}<option value="{{ i }}" {% if light.settings.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>{% endfor %}
+                  {% for i in range(5, 95, 5) %}<option value="{{ i }}" {% if light.settings.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>{% endfor %}
+                  <option value="100" {% if light.settings.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
+                </select>
+              </div>
+
+              {% if light.type == "fastled" %}
+                <div class="col-auto">
+                  <div class="row">
+                    <label for="default-pattern-{{ lightId }}" class="col-6 col-form-label text-end">Default Pattern</label>
+                    <div class="col-6">
+                      <select name="setting[pattern]" class="form-select" id="default-pattern-{{ lightId }}" >
+                        <option value="">--Pattern</option>
+                        {% for pattern in patterns %}<option value="{{ pattern }}" {% if light.settings.pattern == pattern %}selected="selected"{% endif %}>{{ pattern }}</option>{% endfor %}
                       </select>
                     </div>
                   </div>
                 </div>
-
-                {% if light.type == "fastled" %}
-                  <div class="col-xs-12 col-sm-6">
-                    <div class="form-group">
-                      <label for="default-pattern-{{ lightId }}" class="col-xs-6 control-label">Default Pattern</label>
-                      <div class="col-xs-6">
-                        <select name="setting[pattern]" class="form-control" id="default-pattern-{{ lightId }}" >
-                          <option value="">--Pattern</option>
-                          {% for pattern in patterns %}
-                            <option value="{{ pattern }}" {% if light.settings.pattern == pattern %}selected="selected"{% endif %}>{{ pattern }}</option>
-                          {% endfor %}
-                        </select>
-                      </div>
+                <div class="col-auto">
+                  <div class="row">
+                    <label for="default-palette-{{ lightId }}" class="col-6 col-form-label text-end">Default Palette</label>
+                    <div class="col-6">
+                      <select name="setting[palette]" class="form-select" id="default-palette-{{ lightId }}" >
+                        <option value="">--Palette</option>
+                        {% for palette in palettes %}<option value="{{ palette }}"{% if light.settings.palette == palette %}selected="selected"{% endif %}>{{ palette }}</option>{% endfor %}
+                      </select>
                     </div>
-                  </div>
-                  <div class="col-xs-12 col-sm-6">
-                    <div class="form-group">
-                      <label for="default-palette-{{ lightId }}" class="col-xs-6 control-label">Default Palette</label>
-                      <div class="col-xs-6">
-                        <select name="setting[palette]" class="form-control" id="default-palette-{{ lightId }}" >
-                          <option value="">--Palette</option>
-                          {% for palette in palettes %}
-                            <option value="{{ palette }}"{% if light.settings.palette == palette %}selected="selected"{% endif %}>{{ palette }}</option>
-                          {% endfor %}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                {% endif %}
-
-                <div class="col-xs-12 col-sm-6">
-                  <div class="col-xs-offset-6 col-xs-6">
-                    <button class="btn btn-default" type="submit">Save</button>
                   </div>
                 </div>
-              </form>
-            </div>
+              {% endif %}
+
+              <div class="col-auto">
+                <button class="btn btn-secondary" type="submit">Save</button>
+              </div>
+            </form>
           </div>
         </div>
 
-        <div class="panel panel-default">
-          <div class="panel-heading">Color Schedule</div>
-          <div class="panel-body">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Color Schedule</h4>
+            {% set count = 0 %}
             {% for scheduleId, schedule in light.colorSchedule %}
-              <div class="row" style="border-bottom:1px solid #eaeaea;margin-bottom:1em">
-                <div class="col-xs-10 col-md-9">
-                  <form method="post" class="form-horizontal">
-                    <div class="form-group">
-                      <div class="col-xs-6 col-sm-4">
-                        <input type="text" name="start_time" value="{{ schedule.start }}" class="time-input form-control" placeholder="Start Time">
-                        <input type="text" name="end_time" value="{{ schedule.end }}" class="time-input form-control" placeholder="End Time">
-                      </div>
-                      <div class="col-xs-6 col-sm-4">
-                        <input name="settings[color]" class="jscolor form-control" value="{{ schedule.color }}">
-                        <select name="state" class="form-control">
-                          <option value="asis" {% if schedule.state == 'asis' %}selected="selected"{% endif %}>Leave</option>
-                          <option value="on" {% if schedule.state == 'on' %}selected="selected"{% endif %}>Turn On</option>
-                          <option value="off" {% if schedule.state == 'off' %}selected="selected"{% endif %}>Turn Off</option>
-                        </select>
-                      </div>
-                      <div class="col-xs-6 col-sm-4">
-                        <select name="settings[brightness]" class="form-control">
-                          <option value="0" {% if schedule.brightness == "0" %}selected="selected"{% endif %}>0% (Dimmest)</option>
-                          {% for i in range(1, 5, 1) %}
-                            <option value="{{ i }}" {% if schedule.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
-                          {% endfor %}
-                          {% for i in range(5, 95, 5) %}
-                            <option value="{{ i }}" {% if schedule.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>
-                          {% endfor %}
-                          <option value="100" {% if schedule.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
-                        </select>
-                        {% if light.type == "fastled" %}
-                          <select name="settings[pattern]" class="form-control">
-                            <option value="">--Pattern</option>
-                            {% for pattern in patterns %}
-                              <option value="{{ pattern }}" {% if schedule.pattern == pattern %}selected="selected"{% endif %}>{{ pattern }}</option>
-                            {% endfor %}
-                          </select>
-                          <select name="settings[palette]" class="form-control">
-                            <option value="">--Palette</option>
-                            {% for palette in palettes %}
-                              <option value="{{ palette }}"{% if schedule.palette == palette %}selected="selected"{% endif %}>{{ palette }}</option>
-                            {% endfor %}
-                          </select>
-                        {% endif %}
-                        <input type="hidden" name="light" value="{{ lightId }}">
-                        <input type="hidden" name="id" value="{{ scheduleId }}">
-                        <input type="hidden" name="cmd" value="update-color-schedule">
-                        <button class="btn btn-default" type="submit">Update</button>
-                      </div>
+              {% set count = count + 1 %}
+              <div class="row">
+                <div class="col-12" style="border-bottom:1px solid #eaeaea">
+                  <form method="post" class="row mb-1 g-1">
+                    <div class="col-auto">
+                      <input type="text" name="start_time" value="{{ schedule.start }}" class="time-picker form-control" placeholder="Start Time">
                     </div>
-                  </form>
-                </div>
-                <div class="col-xs-2 col-md-3">
-                  <form method="post" class="form-horizontal confirm-submit">
-                    <input type="hidden" name="light" value="{{ lightId }}">
-                    <input type="hidden" name="id" value="{{ scheduleId }}">
-                    <input type="hidden" name="cmd" value="delete-color-schedule">
-                    <button class="btn btn-link" type="submit">
-                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                    </button>
-                  </form>
+                    <div class="col-auto">
+                        <input type="text" name="end_time" value="{{ schedule.end }}" class="time-picker form-control" placeholder="End Time">
+                    </div>
+                    <div class="col-auto">
+                      <button class="btn btn-light color-btn" data-jscolor="{
+                        valueElement: '#color-{{ lightId }}-{{ count }}',
+                        backgroundColor: '#333',
+                        format: 'hex',
+                        hash: false
+                      }">Pick color</button>
+                      <input type="hidden" id="color-{{ lightId }}-{{ count }}" name="settings[color]" value="{{ schedule.color }}">
+                    </div>
+                    <div class="col-auto">
+                      <select name="state" class="form-select">
+                        <option value="asis" {% if schedule.state == 'asis' %}selected="selected"{% endif %}>Leave As-Is</option>
+                        <option value="on" {% if schedule.state == 'on' %}selected="selected"{% endif %}>Turn On</option>
+                        <option value="off" {% if schedule.state == 'off' %}selected="selected"{% endif %}>Turn Off</option>
+                      </select>
+                    </div>
+                    <div class="col-auto">
+                      <select name="settings[brightness]" class="form-select">
+                        <option value="0" disabled>Brightness</option>
+                        <option value="0" {% if schedule.brightness == "0" %}selected="selected"{% endif %}>0% (Dimmest)</option>
+                        {% for i in range(1, 5, 1) %}<option value="{{ i }}" {% if schedule.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>{% endfor %}
+                        {% for i in range(5, 95, 5) %}<option value="{{ i }}" {% if schedule.brightness == i %}selected="selected"{% endif %}>{{ i }}%</option>{% endfor %}
+                        <option value="100" {% if schedule.brightness == "100" %}selected="selected"{% endif %}>100% (Brightest)</option>
+                      </select>
+                    </div>
+                    {% if light.type == "fastled" %}
+                      <div class="col-auto">
+                        <select name="settings[pattern]" class="form-select">
+                          <option value="">--Pattern</option>
+                          {% for pattern in patterns %}<option value="{{ pattern }}" {% if schedule.pattern == pattern %}selected="selected"{% endif %}>{{ pattern }}</option>{% endfor %}
+                        </select>
+                      </div>
+                      <div class="col-auto">
+                        <select name="settings[palette]" class="form-select">
+                          <option value="">--Palette</option>
+                          {% for palette in palettes %}<option value="{{ palette }}"{% if schedule.palette == palette %}selected="selected"{% endif %}>{{ palette }}</option>{% endfor %}
+                        </select>
+                      </div>
+                    {% endif %}
+                    <div class="col-auto">
+                      <input type="hidden" name="light" value="{{ lightId }}">
+                      <input type="hidden" name="id" value="{{ scheduleId }}">
+                      <input type="hidden" name="cmd" value="update-color-schedule">
+                      <button class="btn btn-secondary" type="submit">Update</button>
+                    </div>
+                    <div class="col-auto">
+                      <button class="btn btn-danger delete-schedule-btn" type="button" data-light="{{ lightId }}" data-schedule="{{ scheduleId }}">
+                        <i class="bi bi-calendar-x"></i>
+                      </button>
+                    </div>
+                    </form>
                 </div>
               </div>
 
             {% endfor %}
 
-            <h4>Set New Color Schedule</h4>
-            <div class="row">
-              <form method="post" class="col-xs-10 col-md-9 form-horizontal">
-                <div class="form-group">
-                  <div class="col-xs-6 col-sm-4">
-                    <input type="text" name="start_time" class="time-input form-control" placeholder="Start Time">
-                    <input type="text" name="end_time" class="time-input form-control" placeholder="End Time">
-                  </div>
-                  <div class="col-xs-6 col-sm-4">
-                    <input name="settings[color]" class="jscolor form-control" value="">
-                    <select name="state" class="form-control">
-                      <option value="asis">Leave</option>
-                      <option value="on">Turn On</option>
-                      <option value="off">Turn Off</option>
-                    </select>
-                  </div>
-                  <div class="col-xs-6 col-sm-4">
-                    <select name="settings[brightness]" class="form-control">
-                      <option value="0">0% (Dimmest)</option>
-                      {% for i in range(1, 5, 1) %}
-                        <option value="{{ i }}">{{ i }}%</option>
-                      {% endfor %}
-                      {% for i in range(5, 95, 5) %}
-                        <option value="{{ i }}">{{ i }}%</option>
-                      {% endfor %}
-                      <option value="100">100% (Brightest)</option>
-                    </select>
-                    {% if light.type == "fastled" %}
-                      <select name="settings[pattern]" class="form-control">
-                        <option value="">--Pattern</option>
-                        {% for pattern in patterns %}
-                          <option value="{{ pattern }}">{{ pattern }}</option>
-                        {% endfor %}
-                      </select>
-                      <select name="settings[palette]" class="form-control">
-                        <option value="">--Palette</option>
-                        {% for palette in palettes %}
-                          <option value="{{ palette }}">{{ palette }}</option>
-                        {% endfor %}
-                      </select>
-                    {% endif %}
-                    <input type="hidden" name="light" value="{{ lightId }}">
-                    <input type="hidden" name="cmd" value="create-color-schedule">
-                    <button class="btn btn-default" type="submit">Create</button>
-                  </div>
+            <h4 class="card-title">Set New Color Schedule</h4>
+            <form method="post" class="row g-1">
+              <div class="col-auto">
+                <input type="text" name="start_time" class="time-picker form-control" placeholder="Start Time">
+              </div>
+              <div class="col-auto">
+                <input type="text" name="end_time" class="time-picker form-control" placeholder="End Time">
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-light color-btn" data-jscolor="{
+                  valueElement: '#color-{{ lightId }}-new',
+                  backgroundColor: '#333',
+                  format: 'hex',
+                  hash: false
+                }">Pick color</button>
+                <input type="hidden" id="color-{{ lightId }}-new" name="settings[color]">
+              </div>
+              <div class="col-auto">
+                <select name="state" class="form-select">
+                  <option value="asis">Leave As-Is</option>
+                  <option value="on">Turn On</option>
+                  <option value="off">Turn Off</option>
+                </select>
+              </div>
+              <div class="col-auto">
+                <select name="settings[brightness]" class="form-select">
+                  <option value="0">Brightness</option>
+                  <option value="0">0% (Dimmest)</option>
+                  {% for i in range(1, 5, 1) %}<option value="{{ i }}">{{ i }}%</option>{% endfor %}
+                  {% for i in range(5, 95, 5) %}<option value="{{ i }}">{{ i }}%</option>{% endfor %}
+                  <option value="100">100% (Brightest)</option>
+                </select>
+              </div>
+              {% if light.type == "fastled" %}
+                <div class="col-auto">
+                  <select name="settings[pattern]" class="form-select">
+                    <option value="">--Pattern</option>
+                    {% for pattern in patterns %}<option value="{{ pattern }}">{{ pattern }}</option>{% endfor %}
+                  </select>
                 </div>
-              </form>
-            </div>
+                <div class="col-auto">
+                  <select name="settings[palette]" class="form-select">
+                    <option value="">--Palette</option>
+                    {% for palette in palettes %}<option value="{{ palette }}">{{ palette }}</option>{% endfor %}
+                  </select>
+                </div>
+              {% endif %}
+              <div class="col-auto">
+                <input type="hidden" name="light" value="{{ lightId }}">
+                <input type="hidden" name="cmd" value="create-color-schedule">
+                <button class="btn btn-secondary" type="submit">Create</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
 
     {% else %}
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-11">
           <strong>No lights found&hellip;</strong>
         </div>
       </div>
@@ -294,129 +275,119 @@
 
   {% if offlineLights|length > 0 %}
     <div class="row">
-      <div class="col-md-8 col-sm-12 hover-zone">
+      <div class="col-md-9 col-11 hover-zone p3">
         <h2>Offline Lights</h2>
-        <div class="row">
-          <form method="post" class="col-xs-10 col-md-9 form-horizontal">
-            {% for offlineLight in offlineLights %}
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" name="lights[]" value="{{ offlineLight.id }}"> {{ offlineLight.name }}
-                </label>
-              </div>
-            {% endfor %}
-            <div class="form-group">
-              <div class="col-xs-6 col-sm-3">
-                <input type="hidden" name="cmd" value="remove-lights">
-                <button class="btn btn-warning" type="submit">Remove Selected</button>
-              </div>
+        <form method="post" class="row">
+          {% for offlineLight in offlineLights %}
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="lights[]" value="{{ offlineLight.id }}"> {{ offlineLight.name }}
+              </label>
             </div>
-          </form>
-        </div>
+          {% endfor %}
+          <div class="col-6 col-sm-3">
+            <input type="hidden" name="cmd" value="remove-lights">
+            <button class="btn btn-warning" type="submit">Remove Selected</button>
+          </div>
+        </form>
       </div>
     </div>
   {% endif %}
 
   <div class="row">
-    <div class="col-md-8 col-sm-12 hover-zone">
+    <div class="col-md-9 col-11 p-3 hover-zone">
       <h2>Experiment With Hue</h2>
-      <div class="row">
-        <form method="post" action="#" class="col-xs-10 col-md-9 form-horizontal light-experiment">
-          <div class="form-group">
-            <div class="col-xs-6 col-sm-3">
-              <select name="light" class="form-control">
-                <option value="">--Select One</option>
-                {% for lightId, light in lights %}
-                  {% if light.type == "hue" %}
-                    <option value="{{lightId}}">{{ light.name }}</option>
-                  {% endif %}
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-xs-6 col-sm-3">
-              <input name="settings[color]" class="jscolor form-control" value="">
-            </div>
-            <div class="col-xs-6 col-sm-3">
-              <select name="settings[brightness]" class="form-control">
-                <option value="0">0% (Dimmest)</option>
-                {% for i in range(1, 5, 1) %}
-                  <option value="{{ i }}">{{ i }}%</option>
-                {% endfor %}
-                {% for i in range(5, 95, 5) %}
-                  <option value="{{ i }}">{{ i }}%</option>
-                {% endfor %}
-                <option value="100">100% (Brightest)</option>
-              </select>
-            </div>
-            <div class="col-xs-6 col-sm-3">
-              <input type="hidden" name="type" value="hue">
-              <input type="hidden" name="intend_state" id="intend_state_hue">
-              <button class="btn btn-default" type="submit" onclick="$('#intend_state_hue').val('on')" value="on">Turn On</button>
-              <button class="btn btn-default" type="submit" onclick="$('#intend_state_hue').val('off')" value="off">Turn Off</button>
-            </div>
-          </div>
-        </form>
-      </div>
+      <form method="post" action="#" class="row g-1 light-experiment">
+        <div class="col-auto">
+          <select name="light" class="form-select">
+            <option value="">--Select One</option>
+            {% for lightId, light in lights %}
+              {% if light.type == "hue" %}
+                <option value="{{lightId}}">{{ light.name }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-light color-btn" data-jscolor="{
+            valueElement: '#color-experiment',
+            backgroundColor: '#333',
+            format: 'hex',
+            hash: false
+          }">Pick color</button>
+          <input type="hidden" id="color-experiment" name="settings[color]">
+        </div>
+        <div class="col-auto">
+          <select name="settings[brightness]" class="form-select">
+            <option value="0" disabled>Brightness</option>
+            <option value="0">0% (Dimmest)</option>
+            {% for i in range(1, 5, 1) %}<option value="{{ i }}">{{ i }}%</option>{% endfor %}
+            {% for i in range(5, 95, 5) %}<option value="{{ i }}">{{ i }}%</option>{% endfor %}
+            <option value="100">100% (Brightest)</option>
+          </select>
+        </div>
+        <div class="col-auto">
+          <input type="hidden" name="type" value="hue">
+          <input type="hidden" name="intend_state" id="intend_state_hue">
+          <button class="btn btn-secondary" type="submit" onclick="$('#intend_state_hue').val('on')" value="on">Turn On</button>
+          <button class="btn btn-secondary" type="submit" onclick="$('#intend_state_hue').val('off')" value="off">Turn Off</button>
+        </div>
+      </form>
     </div>
 
-    <div class="col-md-8 col-sm-12 hover-zone">
+    <div class="col-11 col-md-9 hover-zone p-3">
       <h2>Experiment With FastLED</h2>
-      <div class="row">
-        <form method="post" action="#" class="col-xs-10 col-md-9 form-horizontal light-experiment">
-          <div class="form-group">
-            <div class="col-xs-6 col-sm-3">
-              <select name="light" class="form-control">
-                <option value="">--Select One</option>
-                {% for lightId, light in lights %}
-                  {% if light.type == "fastled" %}
-                    <option value="{{lightId}}">{{ light.name }}</option>
-                  {% endif %}
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-xs-6 col-sm-3">
-              <select name="settings[pattern]" class="form-control">
-                <option value="">--Pattern</option>
-                {% for pattern in patterns %}
-                  <option value="{{ pattern }}">{{ pattern }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-xs-6 col-sm-3">
-              <select name="settings[palette]" class="form-control">
-                <option value="">--Palette</option>
-                {% for palette in palettes %}
-                  <option value="{{ palette }}">{{ palette }}</option>
-                {% endfor %}
-              </select>
-            </div>
+      <form method="post" action="#" class="light-experiment row g-1">
+        <div class="col-auto">
+          <select name="light" class="form-select">
+            <option value="">--Select One</option>
+            {% for lightId, light in lights %}
+              {% if light.type == "fastled" %}
+                <option value="{{lightId}}">{{ light.name }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-auto">
+          <select name="settings[pattern]" class="form-select">
+            <option value="">--Pattern</option>
+            {% for pattern in patterns %}<option value="{{ pattern }}">{{ pattern }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="col-auto">
+          <select name="settings[palette]" class="form-select">
+            <option value="">--Palette</option>
+            {% for palette in palettes %}<option value="{{ palette }}">{{ palette }}</option>{% endfor %}
+          </select>
+        </div>
 
-            <div class="col-xs-6 col-sm-3">
-              <input name="settings[color]" class="jscolor form-control" value="">
-            </div>
-            <div class="col-xs-6 col-sm-3">
-              <select name="settings[brightness]" class="form-control">
-                <option value="0">0% (Dimmest)</option>
-                {% for i in range(1, 5, 1) %}
-                  <option value="{{ i }}">{{ i }}%</option>
-                {% endfor %}
-                {% for i in range(5, 95, 5) %}
-                  <option value="{{ i }}">{{ i }}%</option>
-                {% endfor %}
-                <option value="100">100% (Brightest)</option>
-              </select>
-            </div>
-            <div class="col-xs-6 col-sm-3">
-              <input type="hidden" name="type" value="fastled">
-              <input type="hidden" name="intend_state" id="intend_state_fastled">
-              <button class="btn btn-default" type="submit" onclick="$('#intend_state_fastled').val('on')" value="on">Turn On</button>
-              <button class="btn btn-default" type="submit" onclick="$('#intend_state_fastled').val('off')" value="off">Turn Off</button>
-            </div>
-          </div>
-        </form>
-      </div>
+        <div class="col-auto">
+          <button class="btn btn-light color-btn" data-jscolor="{
+            valueElement: '#color-experiment-fastled',
+            backgroundColor: '#333',
+            format: 'hex',
+            hash: false
+          }">Pick color</button>
+          <input type="hidden" name="settings[color]" id="color-experiment-fastled">
+        </div>
+        <div class="col-auto">
+          <select name="settings[brightness]" class="form-select">
+            <option value="0" disabled>Brightness</option>
+            <option value="0">0% (Dimmest)</option>
+            {% for i in range(1, 5, 1) %}<option value="{{ i }}">{{ i }}%</option>{% endfor %}
+            {% for i in range(5, 95, 5) %}<option value="{{ i }}">{{ i }}%</option>{% endfor %}
+            <option value="100">100% (Brightest)</option>
+          </select>
+        </div>
+        <div class="col-auto">
+          <input type="hidden" name="type" value="fastled">
+          <input type="hidden" name="intend_state" id="intend_state_fastled">
+          <button class="btn btn-secondary" type="submit" onclick="$('#intend_state_fastled').val('on')" value="on">Turn On</button>
+          <button class="btn btn-secondary" type="submit" onclick="$('#intend_state_fastled').val('off')" value="off">Turn Off</button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <a id="suggestRefresh" style="position:fixed;right:10px;bottom:10px;font-size:200%" href="/?skipLog=1">Page Should Be Refreshed</a>
+  <a id="suggestRefresh" style="position:fixed;right:10px;bottom:10px;font-size:200%" href="#" onclick="window.location.reload(false)">Please Refresh Page</a>
 {% endblock %}

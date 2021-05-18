@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const lights = require('../lib/lights')
+const lightWatcher = require('../lib/light-watcher')
 
 router.get('/', async function (req, res) {
   const templateData = {}
@@ -17,7 +18,11 @@ router.post('/', async function (req, res, next) {
   if (!req.body.cmd) {
     return next(new Error('POST without a cmd'))
   }
-  if (req.body.cmd === 'add-nonhue-light') {
+  if (req.body.cmd === 'resync') {
+    req.flash('success', 'Light timers successfully re-synced')
+    lightWatcher.init()
+    return res.redirect('/')
+  } else if (req.body.cmd === 'add-nonhue-light') {
     const newEntry = {
       settings: {}
     }
@@ -50,6 +55,7 @@ router.post('/', async function (req, res, next) {
     }
     req.flash('success', 'Lights successfully associated with this system')
   }
+  lightWatcher.init()
   res.redirect('/')
 })
 

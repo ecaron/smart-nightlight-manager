@@ -6,7 +6,6 @@ const flash = require('connect-flash')
 const nunjucks = require('nunjucks')
 const path = require('path')
 
-const bodyParser = require('body-parser')
 const db = require('./lib/db')
 
 process.on('uncaughtException', function (err) {
@@ -33,14 +32,15 @@ app.set('view engine', 'html')
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'secret',
-  cookie: { maxAge: 60000 },
+  cookie: { maxAge: 60000, sameSite: true },
   resave: true,
   saveUninitialized: true
 }))
 app.use(flash())
 
-app.use('/scripts/timepicker/', express.static('node_modules/timepicker'))
+app.use('/scripts/flatpickr/', express.static('node_modules/flatpickr/dist'))
 app.use('/scripts/moment/', express.static('node_modules/moment'))
+app.use('/css/icons/', express.static('node_modules/bootstrap-icons/font'))
 app.use(express.static('public'))
 
 app.use(function (req, res, next) {
@@ -71,8 +71,8 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 app.use(require('morgan')('combined', { stream: logger.stream }))
 app.use(require('./controllers'))
@@ -93,12 +93,5 @@ db.event.on('loaded', function () {
     console.log(`Started ${pkg.name}. Listening on port ${port}`)
   })
 
-  // Once each minute, make sure that if the light is on
-  // and that light has a color schedule, the scheduled color
-  // is used
-  const checkFrequency = process.env.CHECK_FREQUENCY || 60
-  setTimeout(function () {
-    setInterval(lightWatcher, checkFrequency * 1000)
-  }, (checkFrequency - (new Date()).getSeconds()) * 1000)
-  lightWatcher()
+  lightWatcher.init()
 })

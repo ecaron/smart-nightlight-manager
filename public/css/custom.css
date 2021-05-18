@@ -1,11 +1,15 @@
 .flash-boxes p {
   border-radius: 1em;
 }
-
+.card-title {
+  border-bottom: 1px solid #ccc;
+}
 button, .button {
     transition: all 0.3s ease 0s;
 }
-
+button.color-btn {
+  border:1px solid #ccc;
+}
 .expand-log {
   cursor: pointer;
 }

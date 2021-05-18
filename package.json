@@ -29,7 +29,6 @@
   "standard": {
     "ignore": [
       "public/scripts/bootstrap.min.js",
-      "public/scripts/jquery.min.js",
       "public/scripts/jscolor.js"
     ]
   },

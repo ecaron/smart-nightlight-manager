@@ -14,7 +14,7 @@
 
         <div class="float-end btn-group" role="group" aria-label="Light toggles">
           {% if light.result.on %}
-            <form method="post" class="form-inline">
+            <form method="post" class="form-inline" autocomplete="off">
               <div>
                 <input type="hidden" name="light" value="{{ lightId }}">
                 <input type="hidden" name="cmd" value="turn-off">
@@ -22,7 +22,7 @@
               </div>
             </form>
           {% else %}
-            <form method="post" class="form-inline">
+            <form method="post" class="form-inline" autocomplete="off">
               <input type="hidden" name="light" value="{{ lightId }}">
               <input type="hidden" name="cmd" value="turn-on-keep-on">
               <button type="submit" class="btn btn-primary">Turn On</button>
@@ -31,7 +31,7 @@
               <button id="btnGroupDrop-{{ lightId }}" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></button>
               <ul class="dropdown-menu" aria-labelledby="btnGroupDrop-{{ lightId }}">
                 <li>
-                  <form method="post">
+                  <form method="post" autocomplete="off">
                     <input type="hidden" name="light" value="{{ lightId }}">
                     <input type="hidden" name="cmd" value="turn-on-with-timer">
                     <button class="btn btn-link" type="submit">With Timer</button>
@@ -72,7 +72,7 @@
         <div class="card mb-3">
           <div class="card-body">
             <h5 class="card-title">Settings</h5>
-            <form method="post" class="row g-1">
+            <form method="post" class="row g-1" autocomplete="off">
               <input type="hidden" name="light" value="{{ lightId }}">
               <input type="hidden" name="cmd" value="settings">
               <div class="col-auto">
@@ -144,7 +144,7 @@
               {% set count = count + 1 %}
               <div class="row">
                 <div class="col-12" style="border-bottom:1px solid #eaeaea">
-                  <form method="post" class="row mb-1 g-1">
+                  <form method="post" class="row mb-1 g-1" autocomplete="off">
                     <div class="col-auto">
                       <input type="text" name="start_time" value="{{ schedule.start }}" class="time-picker form-control" placeholder="Start Time">
                     </div>
@@ -208,12 +208,12 @@
             {% endfor %}
 
             <h4 class="card-title">Set New Color Schedule</h4>
-            <form method="post" class="row g-1">
+            <form method="post" class="row g-1" autocomplete="off">
               <div class="col-auto">
-                <input type="text" name="start_time" class="time-picker form-control" placeholder="Start Time">
+                <input type="text" name="start_time" class="time-picker form-control" placeholder="Start Time" value="">
               </div>
               <div class="col-auto">
-                <input type="text" name="end_time" class="time-picker form-control" placeholder="End Time">
+                <input type="text" name="end_time" class="time-picker form-control" placeholder="End Time" value="">
               </div>
               <div class="col-auto">
                 <button class="btn btn-light color-btn" data-jscolor="{
@@ -222,11 +222,11 @@
                   format: 'hex',
                   hash: false
                 }">Pick color</button>
-                <input type="hidden" id="color-{{ lightId }}-new" name="settings[color]">
+                <input type="hidden" id="color-{{ lightId }}-new" name="settings[color]" value="FFFFFF">
               </div>
               <div class="col-auto">
                 <select name="state" class="form-select">
-                  <option value="asis">Leave As-Is</option>
+                  <option value="asis" selected>Leave As-Is</option>
                   <option value="on">Turn On</option>
                   <option value="off">Turn Off</option>
                 </select>
@@ -243,13 +243,13 @@
               {% if light.type == "fastled" %}
                 <div class="col-auto">
                   <select name="settings[pattern]" class="form-select">
-                    <option value="">--Pattern</option>
+                    <option value="" selected>--Pattern</option>
                     {% for pattern in patterns %}<option value="{{ pattern }}">{{ pattern }}</option>{% endfor %}
                   </select>
                 </div>
                 <div class="col-auto">
                   <select name="settings[palette]" class="form-select">
-                    <option value="">--Palette</option>
+                    <option value="" selected>--Palette</option>
                     {% for palette in palettes %}<option value="{{ palette }}">{{ palette }}</option>{% endfor %}
                   </select>
                 </div>
@@ -277,7 +277,7 @@
     <div class="row">
       <div class="col-md-9 col-11 hover-zone p3">
         <h2>Offline Lights</h2>
-        <form method="post" class="row">
+        <form method="post" class="row" autocomplete="off">
           {% for offlineLight in offlineLights %}
             <div class="checkbox">
               <label>
@@ -297,7 +297,7 @@
   <div class="row">
     <div class="col-md-9 col-11 p-3 hover-zone">
       <h2>Experiment With Hue</h2>
-      <form method="post" action="#" class="row g-1 light-experiment">
+      <form method="post" action="#" class="row g-1 light-experiment" autocomplete="off">
         <div class="col-auto">
           <select name="light" class="form-select">
             <option value="">--Select One</option>
@@ -337,7 +337,7 @@
 
     <div class="col-11 col-md-9 hover-zone p-3">
       <h2>Experiment With FastLED</h2>
-      <form method="post" action="#" class="light-experiment row g-1">
+      <form method="post" action="#" class="light-experiment row g-1" autocomplete="off">
         <div class="col-auto">
           <select name="light" class="form-select">
             <option value="">--Select One</option>

@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2021-05-19
+
+### Changed
+- Forcing a resync of light status whenever an update to its schedule is made
+- Consolidated the "what schedule to use" logic between the two areas that inherit the schedule
+- Accomodating a [20+ year old Firefox bug](https://bugzilla.mozilla.org/show_bug.cgi?id=46845) where form fields appeared to be populated with outdated info after submission
+
 ## [1.1.0] - 2021-05-17
 ### Added
 - The [bootstrap-icons](https://icons.getbootstrap.com/) library

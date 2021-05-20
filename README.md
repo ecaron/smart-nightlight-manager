@@ -70,9 +70,8 @@ You'll find plenty of other great tutorials on the web about running a Node.js a
 ## Acknowledgements
 * [Original blog about hacking the Dash button](https://medium.com/p/794214b0bdd8)
 * [jscolor Color Picker](http://jscolor.com/) - Makes selecting colors really easy
-* [Bootswatch](https://bootswatch.com/) - Great source for Bootstrap themes
 * [Nunjucks](https://mozilla.github.io/nunjucks/) - Really great templating language for JavaScript
-* [jQuery Timepicker](https://github.com/jonthornton/jquery-timepicker) - Fast way to add time handling to the interface
+* [flatpickr](https://flatpickr.js.org/) - Fast way to add time handling to the interface
 * [node-dash-button](https://github.com/hortinstein/node-dash-button) - Fantastic module to find Node button on the network, and bind it to events. No longer used, but inspiring.
 * [node-hue-api](https://github.com/peter-murray/node-hue-api) - Wonderful module to find and control Philips Hue bridges and bulbs
 * [FastLED + ESP8266 Web Server](https://github.com/jasoncoon/esp8266-fastled-webserver) - Saved me a ton of time programming a non-Hue LED circuit

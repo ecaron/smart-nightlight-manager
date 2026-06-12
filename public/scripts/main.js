@@ -87,7 +87,7 @@ $(document).ready(function () {
     $.ajax({
       type: 'POST',
       url: '/',
-      data: data
+      data
     })
   })
 })
